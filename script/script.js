@@ -1,7 +1,7 @@
 var id, del;
 var x = 0;
 var y = 0;
-var bgColor = [220, 220, 255];
+var bgColor = [226, 249, 255];
 var seaArr = [];
 var tools = [];
 var blocks = [];
@@ -24,7 +24,7 @@ function setup() {
             x: i * width / toolFunctions.length,
             size: width / toolFunctions.length,
             id: i,
-            color: [100, 150, 255],
+            color: [255, 200, 61],
             f: toolFunctions[i]
         })
     }

@@ -4,7 +4,7 @@ function drawBackground(x, y) {
     translate(x, y)
     background(...bgColor)
     translate(-x, -y)
-    fill(100, 100, 255);
+    fill(33,118,255);
     drawSea();
     translate(x, y)
     drawBlocks();   
@@ -15,7 +15,7 @@ function drawToolBar() {
     for (var i = 0; i < tools.length; i++) {
         fill(...tools[i].color);
         if (mouseX > tools[i].x && mouseX < tools[i].x + tools[i].size && mouseY > 0 && mouseY < height / 8) {
-            fill(240, 240, 255)
+            fill(255, 255, 178)
         }
         rect(tools[i].x, 0, width / tools.length, height / 8, 5);
     }
@@ -82,15 +82,17 @@ function character() {
 }
 
 function drawBlocks() {
-    stroke(2)
+
     for (var block of blocks) {
         if (block.type == 'stone') {
-            fill(145, 84, 0)
+           // stroke(100,50,0)
+            fill(205, 82,82)
         }
         else if(block.type == 'iron'){
-            fill(200)
+           // stroke(50)
+            fill(170)
         }
-        rect(block.x, block.y, block.w, block.h)
+        rect(block.x, block.y, block.w, block.h, 2)
     }
     noStroke()
 }
