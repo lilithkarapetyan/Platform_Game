@@ -1,12 +1,14 @@
 function drawBackground(x, y) {
-    checkMouseMovement()
+    if (!mouseIsPressed)
+        checkMouseMovement();
     translate(x, y)
     background(...bgColor)
-    fill(255, 0, 0)
-    rect(width / 2, height / 2, 50, 50)
-    fill(100, 100, 255);
     translate(-x, -y)
+    fill(100, 100, 255);
     drawSea();
+    translate(x, y)
+    drawBlocks();
+    translate(-x, -y)
 }
 
 function drawToolBar() {
@@ -29,7 +31,7 @@ function drawSea() {
 
 function checkMouseMovement() {
     if (mouseY > height / 8 && mouseY < 0 + height && mouseX > 0 && mouseX < 0 + width) {
-        if (mouseX > width / 2) {
+        if (mouseX > width / 5 * 4) {
             seaArr.map(function (item) {
                 return item.x > 0 - item.size / 2 ? item.x-- : item.x = width + item.size / 2;
             });
@@ -37,7 +39,7 @@ function checkMouseMovement() {
 
             x--;
         }
-        else if (mouseX < width / 2) {
+        else if (mouseX < width / 5) {
             seaArr.map(function (item) {
                 return item.x < width + item.size / 2 ? item.x++ : item.x = -item.size / 2;
             });
@@ -53,9 +55,38 @@ function checkMouseMovement() {
 
 
 function toolBarFunction() {
-    if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height / 8) {
-        var tool = Math.floor(mouseX/tools[0].size);
-        
-        tools[tool].color = [255,255,200]
+
+    var tool = Math.floor(mouseX / tools[0].size);
+    // tools[tool].color = [255, 255, 200];
+
+    if (tools[tool].f == 'play') {
+        character();
     }
+    else if (tools[tool].f == 'stone') {
+        blocks.push(new Block(tools[tool].x, tools[tool].y, 50, 'stone'));
+        addedBlock = true;
+    }
+}
+
+
+function character() {
+
+}
+
+function drawBlocks() {
+
+    for (var block of blocks) {
+        if (block.type == 'stone') {
+            fill(145, 84, 0)
+        }
+        rect(block.x, block.y, block.size, block.size)
+    }
+}
+
+function editBlocks() {
+    var blockIndex = blocks.findIndex(function (b) {
+        return mouseX > b.x && mouseX < b.x + b.size && mouseY > b.y && mouseY < b.y + b.size;
+    });
+    return blockIndex
+ 
 }
