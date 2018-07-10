@@ -7,7 +7,7 @@ function drawBackground(x, y) {
     fill(100, 100, 255);
     drawSea();
     translate(x, y)
-    drawBlocks();
+    drawBlocks();   
     translate(-x, -y)
 }
 

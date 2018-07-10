@@ -14,7 +14,7 @@ class Block extends Parent {
     }
 }
 
-class Player extends Parent{
+class Player extends Parent {
     constructor(x, y, w, h) {
         super(x, y, w, h);
         this.started = false;
@@ -22,12 +22,11 @@ class Player extends Parent{
         this.speedX = 3;
         this.speedY = 3;
     }
-
-    move(){
+    move() {
 
     }
 
-    jump(){
+    jump() {
 
     }
 }

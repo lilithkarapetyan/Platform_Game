@@ -18,6 +18,7 @@ function setup() {
             y: height / 8 * 7
         });
     }
+    
     for (var i = 0; i < toolFunctions.length; i++) {
         tools.push({
             x: i * width / toolFunctions.length,
