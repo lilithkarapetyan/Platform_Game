@@ -6,7 +6,9 @@ var seaArr = [];
 var tools = [];
 var blocks = [];
 var addedBlock = false;
-var toolFunctions = ['play', 'stone', 'iron', "death", "sand", "", ""]
+var player;
+var playerJumped = false;
+var toolFunctions = ['Play', 'Stone', 'Horizontal', "Vertical", "Sand", "Death", "Win"]
 function setup() {
     cnv = createCanvas(800, 500);
     background(...bgColor);
@@ -18,7 +20,7 @@ function setup() {
             y: height / 8 * 7
         });
     }
-    
+
     for (var i = 0; i < toolFunctions.length; i++) {
         tools.push({
             x: i * width / toolFunctions.length,
@@ -33,21 +35,51 @@ function setup() {
         y: height / 8 + 10,
         size: 15
     }
+    player = new Player(50, 200, 50, 100)
 }
 
 function draw() {
     drawBackground(x, y);
+    playerAnimation(player);
     drawToolBar();
-
+    if(playerJumped){
+        player.jump();
+    }
+    player.checkCollision()
     if (mouseIsPressed) {
         if (addedBlock) {
             blocks[blocks.length - 1].x = mouseX - x - blocks[blocks.length - 1].w / 2;
             blocks[blocks.length - 1].y = mouseY - blocks[blocks.length - 1].h / 2;
+            if (blocks[blocks.length - 1].type == 'Horizontal') {
+                blocks[blocks.length - 1].staticX = blocks[blocks.length - 1].x;
+                blocks[blocks.length - 1].dirX = 1;
+            } else if (blocks[blocks.length - 1].type == 'Vertical') {
+                blocks[blocks.length - 1].staticY = blocks[blocks.length - 1].y;
+                blocks[blocks.length - 1].dirY = 1;
+            }
+            else if (blocks[blocks.length - 1].type == 'Sand') {
+                blocks[blocks.length - 1].break = function () {
+                    console.log("broken")
+                }
+            }
+            else if (blocks[blocks.length - 1].type == 'Death') {
+                blocks[blocks.length - 1].tempY = blocks[blocks.length - 1].y;
+                blocks[blocks.length - 1].dirY = 0.3;
+            }
         }
 
         if (id >= 0) {
             blocks[id].x = mouseX - x - blocks[id].w / 2;
             blocks[id].y = mouseY - blocks[id].h / 2;
+            if (blocks[id].type == 'Horizontal') {
+                blocks[id].staticX = blocks[id].x;
+            }
+            else if (blocks[id].type == 'Vertical') {
+                blocks[id].staticY = blocks[id].y;
+            }
+            else if (blocks[id].type == 'Death') {
+                blocks[id].tempY = blocks[id].y;
+            }
         }
 
     }
