@@ -38,6 +38,7 @@ class Player extends Parent {
             playerJumped = true;
             console.log(this.speedY)
         }
+
     }
 
     jump() {
@@ -60,27 +61,32 @@ class Player extends Parent {
 
     }
 
+    fall() {
+        this.speedY -= this.gravity;
+        this.y -= this.speedY
+    }
     checkCollision() {
         for (var b in blocks) {
             let block = blocks[b];
-
-
             if (this.y - block.y + this.h < this.h / 2 && this.y - block.y + this.h > 0 && this.x - block.x <= block.w && block.x - this.x <= this.w) {
-                console.log('bottom collision')
+                console.log('buttom collision')
+
                 block.y = this.y + this.h;
             }
             else if (block.y - this.y + block.h < this.h / 2 && block.y - this.y + block.h > 0 && block.x - this.x <= this.w && this.x - block.x <= block.w) {
                 console.log("top collision")
                 block.y = this.y - block.h;
             }
-            else if (block.x - (this.x + this.w) <= 0 && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2 && (block.x - (this.x + this.w)) > -this.w / 2) {
+            else if (this.x + this.w / 2 - (block.x + block.w / 2) < 0 && this.x + this.w / 2 - (block.x + block.w / 2) > -(this.w / 2 + block.w / 2) && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2) {
                 console.log("left collision");
                 block.x = this.x + this.w;
             }
-            else if (this.x - (block.x + block.w) <= 0 && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2 && (this.x - (block.x + block.w)) > -block.w / 2) {
+            else if (this.x + this.w / 2 - (block.x + block.w / 2) > 0 && this.x + this.w / 2 - (block.x + block.w / 2) < (this.w / 2 + block.w / 2) && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2) {
                 console.log("right collision");
                 block.x = this.x - this.w;
             }
         }
+
+
     }
 }
