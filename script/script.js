@@ -42,10 +42,15 @@ function draw() {
     drawBackground(x, y);
     playerAnimation(player);
     drawToolBar();
-    if(playerJumped){
-        player.jump();
+    if(player.started){
+        if(playerJumped){
+            player.jump();
+        }
+        player.fall();
     }
-    player.checkCollision()
+    else{
+        player.checkCollision()
+    }
     if (mouseIsPressed) {
         if (addedBlock) {
             blocks[blocks.length - 1].x = mouseX - x - blocks[blocks.length - 1].w / 2;

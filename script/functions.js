@@ -70,23 +70,23 @@ function toolBarFunction() {
     if (tools[tool].f == 'Play') {
         character();
     }
-    else if (tools[tool].f == 'Stone') {
+    else if (tools[tool].f == 'Stone' && !player.started) {
         blocks.push(new Block(tools[tool].x, tools[tool].y, 50, 50, 'Stone'));
         addedBlock = true;
     }
-    else if (tools[tool].f == 'Horizontal') {
+    else if (tools[tool].f == 'Horizontal' && !player.started) {
         blocks.push(new Block(tools[tool].x, tools[tool].y, 100, 25, 'Horizontal'));
         addedBlock = true;
     }
-    else if (tools[tool].f == 'Vertical') {
+    else if (tools[tool].f == 'Vertical' && !player.started) {
         blocks.push(new Block(tools[tool].x, tools[tool].y, 100, 25, 'Vertical'));
         addedBlock = true;
     }
-    else if (tools[tool].f == 'Sand') {
+    else if (tools[tool].f == 'Sand' && !player.started) {
         blocks.push(new Block(tools[tool].x, tools[tool].y, 50, 50, 'Sand'));
         addedBlock = true;
     }
-    else if (tools[tool].f == 'Death') {
+    else if (tools[tool].f == 'Death' && !player.started) {
         blocks.push(new Block(tools[tool].x, tools[tool].y, 100, 25, 'Death'));
         addedBlock = true;
     }
@@ -94,11 +94,16 @@ function toolBarFunction() {
 
 
 function character() {
-    player.started = true;
+
+    if (player.started) {
+        location.reload(true)
+    }
+    else
+        player.started = true;
 }
 
 function playerAnimation(player) {
-    translate(x,y)
+    translate(x, y)
     if (!player.started) {
         fill(230, 230, 0, 50)
     }
@@ -149,10 +154,11 @@ function drawBlocks() {
 }
 
 function editBlocks() {
-    var blockIndex = blocks.findIndex(function (b) {
-        return mouseX > b.x && mouseX < b.x + b.w && mouseY > b.y && mouseY < b.y + b.h;
-    });
-    return blockIndex
-
+    if (!this.started) {
+        var blockIndex = blocks.findIndex(function (b) {
+            return mouseX > b.x && mouseX < b.x + b.w && mouseY > b.y && mouseY < b.y + b.h;
+        });
+        return blockIndex
+    }
 }
 
