@@ -2,54 +2,55 @@ function drawBackground(x, y) {
     if (!mouseIsPressed)
         checkMouseMovement();
     translate(x, y)
-    background(...bgColor)
+    background(...backgroundColor)
     translate(-x, -y)
-    fill(33, 118, 255);
+    fill(...seaColor);
     drawSea();
     translate(x, y)
     drawBlocks();
-    translate(-x, -y)
+    translate(-x, -y);
+    drawToolBar();
 }
 
 function drawToolBar() {
     for (var i = 0; i < tools.length; i++) {
         fill(...tools[i].color);
-        if (mouseX > tools[i].x && mouseX < tools[i].x + tools[i].size && mouseY > 0 && mouseY < height / 8) {
-            fill(255, 255, 178)
+        if (mouseX > tools[i].x && mouseX < tools[i].x + tools[i].size && mouseY > 0 && mouseY < toolBarHeight) {
+            fill(...tools[i].color)
         }
-        rect(tools[i].x, 0, width / tools.length, height / 8, 5);
-        textSize(20)
+        rect(tools[i].x, 0, width / tools.length, toolBarHeight, toolBarRectCorners);
+        textSize(toolBarTextSize)
         textAlign(CENTER, CENTER);
         fill(0)
-        text(tools[i].f, tools[i].x, 0, width / tools.length, height / 8)
+        text(tools[i].f, tools[i].x, 0, width / tools.length, toolBarHeight)
     }
-    strokeWeight(10);
-    stroke(255, 150, 150)
-    line(del.x, del.y, del.x + del.size, del.y + del.size)
-    line(del.x + del.size, del.y, del.x, del.y + del.size);
-    stroke(0)
-    strokeWeight(1)
-    noStroke()
+    strokeWeight(deleteButton.strokeWeight);
+    stroke(...deleteButton.color)
+    line(deleteButton.x, deleteButton.y, deleteButton.x + deleteButton.size, deleteButton.y + deleteButton.size)
+    line(deleteButton.x + deleteButton.size, deleteButton.y, deleteButton.x, deleteButton.y + deleteButton.size);
+    stroke(0);
+    strokeWeight(1);
+    noStroke();
 }
 
 function drawSea() {
-    rect(0, height / 8 * 7, width, height / 8);
-    fill(...bgColor);
+    rect(0, seaStartingY, width, width - seaStartingY);
+    fill(...backgroundColor);
     for (var item of seaArr) {
         ellipse(item.x, item.y, item.size)
     }
 }
 
 function checkMouseMovement() {
-    if (mouseY > height / 8 + del.y + del.size && mouseY < 0 + height && mouseX > 0 && mouseX < 0 + width) {
+    if (mouseY > toolBarHeight + deleteButton.y + deleteButton.size && mouseY < 0 + height && mouseX > 0 && mouseX < 0 + width) {
 
-        if (mouseX > width / 5 * 4 && x > -400) {
+        if (mouseX > width / backgroundEditRange * (backgroundEditRange - 1) && x > width - backgroundSize) {
             seaArr.map(function (item) {
                 return item.x > 0 - item.size / 2 ? item.x-- : item.x = width + item.size / 2;
             });
             x--;
         }
-        else if (mouseX < width / 5 && x < 0) {
+        else if (mouseX < width / backgroundEditRange && x < 0) {
             seaArr.map(function (item) {
                 return item.x < width + item.size / 2 ? item.x++ : item.x = -item.size / 2;
             });
@@ -58,86 +59,77 @@ function checkMouseMovement() {
     }
 }
 
-
-
-
-
 function toolBarFunction() {
-
+    translate(x, y)
     var tool = Math.floor(mouseX / tools[0].size);
-    // tools[tool].color = [255, 255, 200];
-
+    //console.log(tools)
     if (tools[tool].f == 'Play') {
         character();
     }
-    else if (tools[tool].f == 'Stone' && !player.started) {
-        blocks.push(new Block(tools[tool].x, tools[tool].y, 50, 50, 'Stone'));
-        addedBlock = true;
+    if (!gameStarted) {
+        if (tools[tool].f == 'Stone') {
+            blocks.push(new Block(tools[tool].x, tools[tool].y + toolBarHeight, stoneWidth, stoneHeight, 'Stone', stoneColor, blocks.length));
+            addedBlock = true;
+        }
+        else if (tools[tool].f == 'Horizontal') {
+            blocks.push(new HorizontalBlock(tools[tool].x, tools[tool].y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, horizontalBlocksRange));
+            addedBlock = true;
+            console.log(blocks[blocks.length - 1])
+
+        }
+        else if (tools[tool].f == 'Vertical') {
+            blocks.push(new VerticalBlock(tools[tool].x, tools[tool].y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, verticalBlocksRange));
+            addedBlock = true;
+        }
+        else if (tools[tool].f == 'Sand') {
+            blocks.push(new SandBlock(tools[tool].x, tools[tool].y + toolBarHeight, sandWidth, sandHeight, 'Sand', sandColor, blocks.length));
+            addedBlock = true;
+        }
+        else if (tools[tool].f == 'Death') {
+            blocks.push(new Block(tools[tool].x, tools[tool].y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Death', metalColor, blocks.length));
+            addedBlock = true;
+        }
     }
-    else if (tools[tool].f == 'Horizontal' && !player.started) {
-        blocks.push(new Block(tools[tool].x, tools[tool].y, 100, 25, 'Horizontal'));
-        addedBlock = true;
-    }
-    else if (tools[tool].f == 'Vertical' && !player.started) {
-        blocks.push(new Block(tools[tool].x, tools[tool].y, 100, 25, 'Vertical'));
-        addedBlock = true;
-    }
-    else if (tools[tool].f == 'Sand' && !player.started) {
-        blocks.push(new Block(tools[tool].x, tools[tool].y, 50, 50, 'Sand'));
-        addedBlock = true;
-    }
-    else if (tools[tool].f == 'Death' && !player.started) {
-        blocks.push(new Block(tools[tool].x, tools[tool].y, 100, 25, 'Death'));
-        addedBlock = true;
-    }
+    translate(-x, -y);
 }
 
 
 function character() {
-
-    if (player.started) {
+    if (gameStarted) {
         location.reload(true)
     }
     else
-        player.started = true;
+        gameStarted = true;
 }
 
+//REVIEW
 function playerAnimation(player) {
     translate(x, y)
-    if (!player.started) {
-        fill(230, 230, 0, 50)
+    if (!gameStarted) {
+        fill(...playerColor, playerOpacity)
     }
     else {
-        fill(230, 230, 0);
-        player.move();
+        fill(...playerColor);
+        // player.move();
     }
     rect(player.x, player.y, player.w, player.h);
     translate(-x, -y)
 }
 
+//REVIEW
 function drawBlocks() {
-
     for (var block of blocks) {
-        if (block.type == 'Stone') {
-            fill(205, 82, 82)
-        }
-        else if (block.type == 'Horizontal') {
-            if (block.x < block.staticX - 50 || block.x > block.staticX + 50) {
-                block.dirX *= -1
+        if (block.type == 'Horizontal' || block.type == 'Vertical') {
+            if (gameStarted) {
+                block.move();
             }
-            block.x += block.dirX;
-            fill(170)
-        }
-        else if (block.type == 'Vertical') {
-            if (block.y < block.staticY - 50 || block.y > block.staticY + 50) {
-                block.dirY *= -1
+            else {
+                block.edit();
+                fill(...block.color, 50);
+                rect(block.editor.x, block.editor.y, block.editor.w, block.editor.h);
             }
-            block.y += block.dirY;
-            fill(170)
         }
-        else if (block.type == 'Sand') {
-            fill(255, 120, 100)
-        }
+        
         else if (block.type == 'Death') {
             if (block.tempY < block.y - 15 || block.tempY > block.y) {
                 block.dirY *= -1
@@ -145,18 +137,18 @@ function drawBlocks() {
             block.tempY += block.dirY;
             fill(255, 0, 0);
             rect(block.x, block.tempY, block.w, 15)
-            fill(170)
-
         }
-        rect(block.x, block.y, block.w, block.h, 2);
+        fill(...block.color)
+        rect(block.x, block.y, block.w, block.h, blocksRoundedCorners);
     }
     noStroke();
 }
 
+
 function editBlocks() {
-    if (!this.started) {
+    if (!gameStarted) {
         var blockIndex = blocks.findIndex(function (b) {
-            return mouseX > b.x && mouseX < b.x + b.w && mouseY > b.y && mouseY < b.y + b.h;
+            return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h;
         });
         return blockIndex
     }
