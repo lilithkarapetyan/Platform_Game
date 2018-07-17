@@ -60,39 +60,33 @@ function checkMouseMovement() {
 }
 
 function toolBarFunction() {
-    translate(x, y)
     var tool = Math.floor(mouseX / tools[0].size);
-    //console.log(tools)
     if (tools[tool].f == 'Play') {
         character();
     }
     if (!gameStarted) {
         if (tools[tool].f == 'Stone') {
-            blocks.push(new Block(tools[tool].x, tools[tool].y + toolBarHeight, stoneWidth, stoneHeight, 'Stone', stoneColor, blocks.length));
-            addedBlock = true;
+            //                    _____block.x____,_______________block.y_____________,__block.w__,__block.h__,block.type, block.color,__block.id__
+            blocks.push(new Block(tools[tool].x - x, tools[tool].y - y + toolBarHeight, stoneWidth, stoneHeight, 'Stone', stoneColor, blocks.length));
         }
         else if (tools[tool].f == 'Horizontal') {
-            blocks.push(new HorizontalBlock(tools[tool].x, tools[tool].y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, horizontalBlocksRange));
-            addedBlock = true;
-            console.log(blocks[blocks.length - 1])
-
+            //                                                                                                                                                                  block.dirX             block.editRange
+            blocks.push(new HorizontalBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, horizontalBlocksRange));
         }
-        else if (tools[tool].f == 'Vertical') {
-            blocks.push(new VerticalBlock(tools[tool].x, tools[tool].y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, verticalBlocksRange));
-            addedBlock = true;
+        else if (tools[tool].f == 'Vertical') { 
+            //                                                                                                                                                              block.dirY           block.editRange
+            blocks.push(new VerticalBlock(tools[tool].x - x, tools[tool].y + toolBarHeight - y, metalBlocksWidth, metalBlocksHeight, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, verticalBlocksRange));   
         }
         else if (tools[tool].f == 'Sand') {
-            blocks.push(new SandBlock(tools[tool].x, tools[tool].y + toolBarHeight, sandWidth, sandHeight, 'Sand', sandColor, blocks.length));
-            addedBlock = true;
+
+            blocks.push(new SandBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, sandWidth, sandHeight, 'Sand', sandColor, blocks.length));  
         }
         else if (tools[tool].f == 'Death') {
-            blocks.push(new Block(tools[tool].x, tools[tool].y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Death', metalColor, blocks.length));
-            addedBlock = true;
+            //                                                                                                                                                        block.slicer.dirY
+            blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Death', metalColor, blocks.length, deathBlockSlicerV));  
         }
     }
-    translate(-x, -y);
 }
-
 
 function character() {
     if (gameStarted) {
@@ -100,20 +94,6 @@ function character() {
     }
     else
         gameStarted = true;
-}
-
-//REVIEW
-function playerAnimation(player) {
-    translate(x, y)
-    if (!gameStarted) {
-        fill(...playerColor, playerOpacity)
-    }
-    else {
-        fill(...playerColor);
-        // player.move();
-    }
-    rect(player.x, player.y, player.w, player.h);
-    translate(-x, -y)
 }
 
 //REVIEW
@@ -125,18 +105,21 @@ function drawBlocks() {
             }
             else {
                 block.edit();
-                fill(...block.color, 50);
-                rect(block.editor.x, block.editor.y, block.editor.w, block.editor.h);
+                if (editedBlocksID != block.id) {
+                    fill(...block.color, 50);
+                    rect(block.editor.x, block.editor.y, block.editor.w, block.editor.h);
+                }
             }
         }
-        
+
         else if (block.type == 'Death') {
-            if (block.tempY < block.y - 15 || block.tempY > block.y) {
-                block.dirY *= -1
+            if (gameStarted)
+                block.move();
+            if (editedBlocksID != block.id) {
+                fill(...deathBlockSlicerColor);
+                rect(block.slicer.x, block.slicer.y, block.slicer.w, block.slicer.h)
             }
-            block.tempY += block.dirY;
-            fill(255, 0, 0);
-            rect(block.x, block.tempY, block.w, 15)
+
         }
         fill(...block.color)
         rect(block.x, block.y, block.w, block.h, blocksRoundedCorners);
@@ -146,11 +129,28 @@ function drawBlocks() {
 
 
 function editBlocks() {
-    if (!gameStarted) {
-        var blockIndex = blocks.findIndex(function (b) {
-            return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h;
-        });
-        return blockIndex
-    }
+    var blockIndex = blocks.findIndex(function (b) {
+        return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h;
+    });
+    return blockIndex
 }
 
+function updateBlocksCoordinates(i) {
+    if (blocks[i].type == 'Horizontal') {
+        blocks[i].editor.x = blocks[i].x + blocks[i].editRange;
+        blocks[i].editor.y = blocks[i].y;
+        blocks[i].staticX = blocks[i].x + blocks[i].w / 2;
+
+    }
+    else if (blocks[i].type == 'Vertical') {
+        blocks[i].editor.x = blocks[i].x;
+        blocks[i].editor.y = blocks[i].y + blocks[i].editRange;
+        blocks[i].staticY = blocks[i].y + blocks[i].h / 2;
+    }
+    else if (blocks[i].type == 'Death') {
+        blocks[i].slicer.y = blocks[i].y - blocks[i].slicer.h;
+        blocks[i].slicer.x = blocks[i].x;
+    }
+    blocks[i].deleteBlock()
+
+}

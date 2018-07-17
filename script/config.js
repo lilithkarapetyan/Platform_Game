@@ -7,13 +7,13 @@ var y = 0;
 var gameStarted = false;
 var gravity = 0.2;
 
-// red, green, blue
 var backgroundColor = [226, 249, 255];
 var toolBarColor = [255, 200, 61];
 var seaColor = [33, 118, 255];
 var stoneColor = [205, 82, 82];
 var metalColor = [170, 170, 170];
 var sandColor = [255, 120, 100];
+var deathBlockSlicerColor = [255, 0, 0]
 
 var playerColor = [230, 230, 0];
 var playerOpacity = 50;
@@ -42,8 +42,8 @@ var deleteButton = {
     strokeWeight: 10
 }
 
-var horizontalBlocksSpeed = 1;
-var verticalBlocksSpeed = 1;
+var horizontalBlocksSpeed = 0.5;
+var verticalBlocksSpeed = 0.5;
 
 var stoneWidth = 50;
 var stoneHeight = 50;
@@ -52,7 +52,6 @@ var metalBlocksHeight = 25;
 var sandWidth = 50;
 var sandHeight = 50;
 
-var addedBlock = false;
 var toolBarRectCorners = 5;
 var toolBarTextSize = 20;
 
@@ -61,9 +60,10 @@ var backgroundEditRange = 5;   // 1/5 of Canvas
 
 var blocksRoundedCorners = 2;
 
-var horizontalBlocksRange = 50;
-var verticalBlocksRange = 50;
+var horizontalBlocksRange = 150;
+var verticalBlocksRange = 150;
 
 var editedBlocksID;
 
-var playerV = 3
+var playerV = 3;
+var deathBlockSlicerV = 0.2;
