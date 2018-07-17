@@ -20,12 +20,16 @@ function setup() {
             f: toolsFunctions[i]
         })
     }
-    
-    
+
+
 }
 
 function draw() {
     drawBackground(x, y);
+    player.animate()
+    if (gameStarted) {
+        player.play();
+    }
     if (mouseIsPressed) {
         if (editedBlocksID >= 0) {
             blocks[editedBlocksID].x = mouseX - x - blocks[editedBlocksID].w / 2;
