@@ -134,16 +134,16 @@ class HorizontalBlock extends Block {
         }
     }
     move() {
-        if (this.x + this.w / 2 > this.staticX  + this.editRange || this.x + this.w / 2 < this.staticX) {
+        if (this.x + this.w / 2 > this.staticX + this.editRange || this.x + this.w / 2 < this.staticX) {
             this.dirX *= -1;
-            console.log(this.x, this.staticX , this.editRange)
+            console.log(this.x, this.staticX, this.editRange)
         }
         this.x += this.dirX;
     }
 
     edit() {
         if (mouseIsPressed) {
-            if (mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY > this.editor.y + y && mouseY < this.editor.y + y + this.editor.h) {
+            if (editedBlocksID != this.id && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY > this.editor.y + y && mouseY < this.editor.y + y + this.editor.h) {
                 this.editor.x = mouseX - this.editor.w / 2 - x;
                 this.editRange = this.editor.x + this.editor.w / 2 - (this.x + this.w / 2);
             }
@@ -166,16 +166,16 @@ class VerticalBlock extends Block {
         }
     }
     move() {
-        if (this.y + this.h / 2 > this.staticY  + this.editRange || this.y + this.h / 2 < this.staticY) {
+        if (this.y + this.h / 2 > this.staticY + this.editRange || this.y + this.h / 2 < this.staticY) {
             this.dirY *= -1;
-            console.log(this.y, this.staticY , this.editRange)
+            console.log(this.y, this.staticY, this.editRange)
         }
         this.y += this.dirY;
     }
 
     edit() {
         if (mouseIsPressed) {
-            if (mouseY > this.editor.y + y && mouseY < this.editor.y + this.editor.h + y && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x) {
+            if (editedBlocksID != this.id && mouseY > this.editor.y + y && mouseY < this.editor.y + this.editor.h + y && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x) {
                 this.editor.y = mouseY - this.editor.h / 2;
                 this.editRange = this.editor.y + this.editor.h / 2 - (this.y + this.h / 2);
             }

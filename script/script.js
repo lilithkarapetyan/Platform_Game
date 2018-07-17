@@ -20,8 +20,8 @@ function setup() {
             f: toolsFunctions[i]
         })
     }
-
-
+    
+    
 }
 
 function draw() {
@@ -30,13 +30,14 @@ function draw() {
         if (editedBlocksID >= 0) {
             blocks[editedBlocksID].x = mouseX - x - blocks[editedBlocksID].w / 2;
             blocks[editedBlocksID].y = mouseY - blocks[editedBlocksID].h / 2;
+            updateBlocksCoordinates(editedBlocksID)
         }
     }
 }
 
 function mouseReleased() {
     if (editedBlocksID >= 0) {
-        updateBlocksCoordinates(editedBlocksID)
+        blocks[editedBlocksID].deleteBlock()
         editedBlocksID = undefined;
     }
 }

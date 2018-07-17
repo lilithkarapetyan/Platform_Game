@@ -42,8 +42,8 @@ var deleteButton = {
     strokeWeight: 10
 }
 
-var horizontalBlocksSpeed = 0.5;
-var verticalBlocksSpeed = 0.5;
+var horizontalBlocksSpeed = 0.75;
+var verticalBlocksSpeed = 0.75;
 
 var stoneWidth = 50;
 var stoneHeight = 50;
@@ -61,7 +61,7 @@ var backgroundEditRange = 5;   // 1/5 of Canvas
 var blocksRoundedCorners = 2;
 
 var horizontalBlocksRange = 150;
-var verticalBlocksRange = 150;
+var verticalBlocksRange = 75;
 
 var editedBlocksID;
 

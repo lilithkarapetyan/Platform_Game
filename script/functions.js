@@ -73,17 +73,17 @@ function toolBarFunction() {
             //                                                                                                                                                                  block.dirX             block.editRange
             blocks.push(new HorizontalBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, horizontalBlocksRange));
         }
-        else if (tools[tool].f == 'Vertical') { 
+        else if (tools[tool].f == 'Vertical') {
             //                                                                                                                                                              block.dirY           block.editRange
-            blocks.push(new VerticalBlock(tools[tool].x - x, tools[tool].y + toolBarHeight - y, metalBlocksWidth, metalBlocksHeight, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, verticalBlocksRange));   
+            blocks.push(new VerticalBlock(tools[tool].x - x, tools[tool].y + toolBarHeight - y, metalBlocksWidth, metalBlocksHeight, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, verticalBlocksRange));
         }
         else if (tools[tool].f == 'Sand') {
 
-            blocks.push(new SandBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, sandWidth, sandHeight, 'Sand', sandColor, blocks.length));  
+            blocks.push(new SandBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, sandWidth, sandHeight, 'Sand', sandColor, blocks.length));
         }
         else if (tools[tool].f == 'Death') {
             //                                                                                                                                                        block.slicer.dirY
-            blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Death', metalColor, blocks.length, deathBlockSlicerV));  
+            blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Death', metalColor, blocks.length, deathBlockSlicerV));
         }
     }
 }
@@ -105,21 +105,18 @@ function drawBlocks() {
             }
             else {
                 block.edit();
-                if (editedBlocksID != block.id) {
-                    fill(...block.color, 50);
-                    rect(block.editor.x, block.editor.y, block.editor.w, block.editor.h);
-                }
+                fill(...block.color, 50);
+                rect(block.editor.x, block.editor.y, block.editor.w, block.editor.h);
             }
         }
 
         else if (block.type == 'Death') {
+
             if (gameStarted)
                 block.move();
-            if (editedBlocksID != block.id) {
-                fill(...deathBlockSlicerColor);
-                rect(block.slicer.x, block.slicer.y, block.slicer.w, block.slicer.h)
-            }
 
+            fill(...deathBlockSlicerColor);
+            rect(block.slicer.x, block.slicer.y, block.slicer.w, block.slicer.h)
         }
         fill(...block.color)
         rect(block.x, block.y, block.w, block.h, blocksRoundedCorners);
@@ -151,6 +148,6 @@ function updateBlocksCoordinates(i) {
         blocks[i].slicer.y = blocks[i].y - blocks[i].slicer.h;
         blocks[i].slicer.x = blocks[i].x;
     }
-    blocks[i].deleteBlock()
+
 
 }
