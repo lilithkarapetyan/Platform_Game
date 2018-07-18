@@ -45,11 +45,24 @@ class Player extends Parent {
 
     move() {
         if (keyIsDown(LEFT_ARROW) && !this.collision.left) {
-            this.x -= this.speedX;
+            if (this.x > 0) {
+                this.x -= this.speedX;
+                console.log(canvasWidth, backgroundSize, x)
+                if (x < 0) {
+                    x += this.speedX
+                }
+            }
         }
         else if (keyIsDown(RIGHT_ARROW) && !this.collision.right) {
-            this.x += this.speedX
+            if (this.x +this.w <= backgroundSize) {
+                this.x += this.speedX
+                if (this.x + x + this.w / 2 >= canvasWidth / 2) {
+                    x -= this.speedX
+                }
+
+            }
         }
+
         if (keyIsDown(UP_ARROW) && !this.collision.up) {
             if (this.speedY > -2) {
                 // console.log(this.speedY)
@@ -77,31 +90,31 @@ class Player extends Parent {
         var that = this;
         var bottom = blocks.find(function (block) {
             return ((block.y + block.h / 2) - (that.y + that.h / 2) <= that.h / 2 + block.h / 2) &&
-                ((block.y + block.h / 2) - (that.y + that.h / 2)) >= that.h / 2 
-                && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2  - that.speedX;
+                ((block.y + block.h / 2) - (that.y + that.h / 2)) >= that.h / 2
+                && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2 - that.speedX;
         });
 
         var right = blocks.find(function (block) {
             return ((block.x + block.w / 2) - (that.x + that.w / 2) <= that.w / 2 + block.w / 2) &&
-                ((block.x + block.w / 2) - (that.x + that.w / 2) >= that.w / 2 )
+                ((block.x + block.w / 2) - (that.x + that.w / 2) >= that.w / 2)
                 && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY;
         });
 
         var left = blocks.find(function (block) {
             return ((that.x + that.w / 2) - (block.x + block.w / 2) <= that.w / 2 + block.w / 2) &&
-                ((that.x + that.w / 2) - (block.x + block.w / 2)) >= that.w / 2 
-                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2  - that.speedY;
+                ((that.x + that.w / 2) - (block.x + block.w / 2)) >= that.w / 2
+                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY;
         });
 
         var up = blocks.find(function (block) {
             return ((that.y + that.h / 2) - (block.y + block.h / 2) <= that.h / 2 + block.h / 2) &&
-                ((that.y + that.h / 2) - (block.y + block.h / 2)) >= that.h / 2 
+                ((that.y + that.h / 2) - (block.y + block.h / 2)) >= that.h / 2
                 && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2 - that.speedX;
         });
 
         if (bottom) {
             this.collision.down = true;
-            this.y = bottom.y - this.h ;
+            this.y = bottom.y - this.h;
         }
         else
             this.collision.down = false;
@@ -121,7 +134,7 @@ class Player extends Parent {
         else
             this.collision.left = false;
 
-        console.log(this.collision)
+        //console.log(this.collision)
     }
 
 
@@ -196,7 +209,7 @@ class Player extends Parent {
             else if (this.x + this.w / 2 - (block.x + block.w / 2) > 0 && this.x + this.w / 2 - (block.x + block.w / 2) < (this.w / 2 + block.w / 2) && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2)
             block.x = this.x - this.w;
             }
-
+ 
         }
         
         */
