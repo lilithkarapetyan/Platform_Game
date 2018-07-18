@@ -78,30 +78,30 @@ class Player extends Parent {
         var bottom = blocks.find(function (block) {
             return ((block.y + block.h / 2) - (that.y + that.h / 2) <= that.h / 2 + block.h / 2) &&
                 ((block.y + block.h / 2) - (that.y + that.h / 2)) >= that.h / 2 
-                && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2;
+                && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2  - that.speedX;
         });
 
         var right = blocks.find(function (block) {
             return ((block.x + block.w / 2) - (that.x + that.w / 2) <= that.w / 2 + block.w / 2) &&
-                Math.abs(((block.x + block.w / 2) - (that.x + that.w / 2)) >= that.w / 2 )
-                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2;
+                ((block.x + block.w / 2) - (that.x + that.w / 2) >= that.w / 2 )
+                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY;
         });
 
         var left = blocks.find(function (block) {
             return ((that.x + that.w / 2) - (block.x + block.w / 2) <= that.w / 2 + block.w / 2) &&
-                Math.abs(((that.x + that.w / 2) - (block.x + block.w / 2)) >= that.w / 2 )
-                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2;
+                ((that.x + that.w / 2) - (block.x + block.w / 2)) >= that.w / 2 
+                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2  - that.speedY;
         });
 
         var up = blocks.find(function (block) {
             return ((that.y + that.h / 2) - (block.y + block.h / 2) <= that.h / 2 + block.h / 2) &&
                 ((that.y + that.h / 2) - (block.y + block.h / 2)) >= that.h / 2 
-                && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2;
+                && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2 - that.speedX;
         });
 
         if (bottom) {
             this.collision.down = true;
-            this.y = bottom.y - this.h;
+            this.y = bottom.y - this.h ;
         }
         else
             this.collision.down = false;
