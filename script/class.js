@@ -52,14 +52,14 @@ class Player extends Parent {
         }
         if (keyIsDown(UP_ARROW) && !this.collision.up) {
             if (this.speedY > -2) {
-                console.log(this.speedY)
+                // console.log(this.speedY)
                 this.speedY -= this.accelaration
             }
             else {
-                console.log(this.limit)
-               // if (this.limit) {
-                    this.speedY = 0;
-                    this.limit = true;
+                // console.log(this.limit)
+                // if (this.limit) {
+                this.speedY = 0;
+                this.limit = true;
                 //}
             }
         }
@@ -77,25 +77,25 @@ class Player extends Parent {
         var that = this;
         var bottom = blocks.find(function (block) {
             return ((block.y + block.h / 2) - (that.y + that.h / 2) <= that.h / 2 + block.h / 2) &&
-                ((block.y + block.h / 2) - (that.y + that.h / 2) >= 0)
+                ((block.y + block.h / 2) - (that.y + that.h / 2)) >= that.h / 2 
                 && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2;
         });
 
         var right = blocks.find(function (block) {
             return ((block.x + block.w / 2) - (that.x + that.w / 2) <= that.w / 2 + block.w / 2) &&
-                ((block.x + block.w / 2) - (that.x + that.w / 2) >= 0)
+                Math.abs(((block.x + block.w / 2) - (that.x + that.w / 2)) >= that.w / 2 )
                 && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2;
         });
 
         var left = blocks.find(function (block) {
             return ((that.x + that.w / 2) - (block.x + block.w / 2) <= that.w / 2 + block.w / 2) &&
-                ((that.x + that.w / 2) - (block.x + block.w / 2) >= 0)
+                Math.abs(((that.x + that.w / 2) - (block.x + block.w / 2)) >= that.w / 2 )
                 && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2;
         });
 
         var up = blocks.find(function (block) {
             return ((that.y + that.h / 2) - (block.y + block.h / 2) <= that.h / 2 + block.h / 2) &&
-                ((that.y + that.h / 2) - (block.y + block.h / 2) >= 0)
+                ((that.y + that.h / 2) - (block.y + block.h / 2)) >= that.h / 2 
                 && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2;
         });
 
@@ -120,6 +120,8 @@ class Player extends Parent {
         }
         else
             this.collision.left = false;
+
+        console.log(this.collision)
     }
 
 
@@ -231,7 +233,7 @@ class HorizontalBlock extends Block {
     move() {
         if (this.x + this.w / 2 > this.staticX + this.editRange || this.x + this.w / 2 < this.staticX) {
             this.dirX *= -1;
-            console.log(this.x, this.staticX, this.editRange)
+            // console.log(this.x, this.staticX, this.editRange)
         }
         this.x += this.dirX;
     }
@@ -263,7 +265,7 @@ class VerticalBlock extends Block {
     move() {
         if (this.y + this.h / 2 > this.staticY + this.editRange || this.y + this.h / 2 < this.staticY) {
             this.dirY *= -1;
-            console.log(this.y, this.staticY, this.editRange)
+            //console.log(this.y, this.staticY, this.editRange)
         }
         this.y += this.dirY;
     }
