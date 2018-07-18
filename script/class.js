@@ -8,13 +8,13 @@ class Parent {
 }
 
 class Player extends Parent {
-    constructor(x, y, w, h) {
+    constructor(x, y, w, h, VX, VY, a, c) {
         super(x, y, w, h);
-        this.speedX = 3;
-        this.speedY = 0;
-        this.accelaration = 0.4;
+        this.speedX = VX;
+        this.speedY = VY;
+        this.accelaration = a;
         this.limit = false;
-        this.color = playerColor;
+        this.color = c;
         this.collision = {
             right: false,
             left: false,
@@ -47,14 +47,14 @@ class Player extends Parent {
         if (keyIsDown(LEFT_ARROW) && !this.collision.left) {
             if (this.x > 0) {
                 this.x -= this.speedX;
-                console.log(canvasWidth, backgroundSize, x)
+                // console.log(canvasWidth, backgroundSize, x)
                 if (x < 0) {
                     x += this.speedX
                 }
             }
         }
         else if (keyIsDown(RIGHT_ARROW) && !this.collision.right) {
-            if (this.x +this.w <= backgroundSize) {
+            if (this.x + this.w <= backgroundSize) {
                 this.x += this.speedX
                 if (this.x + x + this.w / 2 >= canvasWidth / 2) {
                     x -= this.speedX
@@ -63,8 +63,8 @@ class Player extends Parent {
             }
         }
 
-        if (keyIsDown(UP_ARROW) && !this.collision.up) {
-            if (this.speedY > -2) {
+        if (keyIsDown(UP_ARROW) && !this.collision.up && !this.limit) {
+            if (this.speedY > -5) {
                 // console.log(this.speedY)
                 this.speedY -= this.accelaration
             }
@@ -76,17 +76,19 @@ class Player extends Parent {
                 //}
             }
         }
+
         if (!this.collision.down) {
             this.speedY += gravity;
         }
-        /*else {
+        else {
             this.limit = false;
-            this.speedY = 0;
-        }*/
+        }
+
         this.y += this.speedY;
     }
 
     checkCollision() {
+
         var that = this;
         var bottom = blocks.find(function (block) {
             return ((block.y + block.h / 2) - (that.y + that.h / 2) <= that.h / 2 + block.h / 2) &&
@@ -137,6 +139,26 @@ class Player extends Parent {
         //console.log(this.collision)
     }
 
+    snap() {
+        for (var b in blocks) {
+            let block = blocks[b];
+            if (this.y - block.y + this.h < this.h / 2 && this.y - block.y + this.h > 0 && this.x - block.x <= block.w && block.x - this.x <= this.w) {
+
+                block.y = this.y + this.h;
+            }
+            else if (block.y - this.y + block.h < this.h / 2 && block.y - this.y + block.h > 0 && block.x - this.x <= this.w && this.x - block.x <= block.w) {
+                block.y = this.y - block.h;
+            }
+            else if (this.x + this.w / 2 - (block.x + block.w / 2) < 0 && this.x + this.w / 2 - (block.x + block.w / 2) > -(this.w / 2 + block.w / 2) && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2) {
+
+                block.x = this.x + this.w;
+            }
+            else if (this.x + this.w / 2 - (block.x + block.w / 2) > 0 && this.x + this.w / 2 - (block.x + block.w / 2) < (this.w / 2 + block.w / 2) && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2)
+                block.x = this.x - block.w;
+        }
+
+
+    }
 
     /*    move() {
         if (keyIsDown(LEFT_ARROW)) {
@@ -324,4 +346,4 @@ class DeathBlock extends Block {
 
 }
 
-player = new Player(playerStartingX, playerStartingY, playerWidth, playerHeight);
+player = new Player(playerStartingX, playerStartingY, playerWidth, playerHeight , playerVX, playerVY, playerA, playerColor);

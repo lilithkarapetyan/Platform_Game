@@ -48,13 +48,13 @@ function checkMouseMovement() {
             seaArr.map(function (item) {
                 return item.x > 0 - item.size / 2 ? item.x-- : item.x = width + item.size / 2;
             });
-            x--;
+            x-=2;
         }
         else if (mouseX < width / backgroundEditRange && x < 0) {
             seaArr.map(function (item) {
                 return item.x < width + item.size / 2 ? item.x++ : item.x = -item.size / 2;
             });
-            x++;
+            x+=2;
         }
     }
 }
@@ -63,6 +63,7 @@ function toolBarFunction() {
     var tool = Math.floor(mouseX / tools[0].size);
     if (tools[tool].f == 'Play') {
         character();
+        x = 0
     }
     if (!gameStarted) {
         if (tools[tool].f == 'Stone') {

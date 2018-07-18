@@ -30,6 +30,9 @@ function draw() {
     if (gameStarted) {
         player.play();
     }
+    else{
+        player.snap()
+    }
     if (mouseIsPressed) {
         if (editedBlocksID >= 0) {
             blocks[editedBlocksID].x = mouseX - x - blocks[editedBlocksID].w / 2;

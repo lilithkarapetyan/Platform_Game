@@ -65,5 +65,7 @@ var verticalBlocksRange = 75;
 
 var editedBlocksID;
 
-var playerV = 3;
+var playerVX = 3;
+var playerVY = 3;
+var playerA = 0.4;
 var deathBlockSlicerV = 0.2;
