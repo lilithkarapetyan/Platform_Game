@@ -11,7 +11,7 @@ class Player extends Parent {
     constructor(x, y, w, h, VX, VY, a, c) {
         super(x, y, w, h);
         this.speedX = VX;
-        this.speedY = VY;
+        this.speedY = 0;
         this.accelaration = a;
         this.limit = false;
         this.color = c;
@@ -48,7 +48,7 @@ class Player extends Parent {
         if (!playerEditing) this.snap();
 
     }
-    
+
     move() {
         if (keyIsDown(LEFT_ARROW) && !this.collision.left) {
             if (this.x > 0) {
@@ -66,14 +66,123 @@ class Player extends Parent {
                 }
 
             }
+
+
         }
 
+
+        this.speedY += gravity;
+        this.y += this.speedY;
+
+        if (this.collision.bottom) {
+            //this.y = 175.0;
+            velocityY = 0.0;
+        }
+        
+        /*
         if (keyIsDown(UP_ARROW) && !this.collision.up && !this.limit) {
-
+            if (this.speedY < -5) {
+                this.limit = true;
+            } else
+            this.speedY -= this.accelaration;
         }
 
+        if (!this.collision.bottom) {
+            this.y += this.speedY
+            this.speedY += gravity;
+        }
+        else {
+            this.speedY = -VX
+        }
+        */
+
+
+        /*
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+
+        var positionX = 100.0;
+        var positionY = 175.0;
+        var velocityX = 4.0;
+        var velocityY = 0.0;
+        var gravity = 0.5;
+        var onGround = false;
+
+        window.addEventListener("mousedown", StartJump, false);
+        window.addEventListener("mouseup", EndJump, false);
+
+        Loop();
+        
+        function StartJump()
+        {
+            if(onGround)
+            {
+                velocityY = -12.0;
+                onGround = false;
+            }
+        }
+
+        function EndJump()
+        {
+            if(velocityY < -6.0)
+                velocityY = -6.0;
+        }
+
+        function Loop()
+        {
+            Update();
+            Render();
+            window.setTimeout(Loop, 33);    
+        }
+        
+        function Update()
+        {
+            velocityY += gravity;
+            positionY += velocityY;
+            positionX += velocityX;
+            
+            if(positionY > 175.0)
+            {
+                positionY = 175.0;
+                velocityY = 0.0;
+                onGround = true;
+            }
+            
+            if(positionX < 10 || positionX > 190)
+            velocityX *= -1;
+        }
+        
+        function Render()
+        {
+            ctx.clearRect(0, 0, 200, 200);
+            ctx.beginPath();
+            ctx.moveTo(0,175);
+            ctx.lineTo(200,175);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(positionX - 10, positionY - 20);
+            ctx.lineTo(positionX + 10, positionY - 20);
+            ctx.lineTo(positionX + 10, positionY);
+            ctx.lineTo(positionX - 10, positionY);
+            ctx.closePath();
+            ctx.stroke(); 
+        }
+        
+        */
+    }
+    
+    startJump()
+    {
+        if (this.collision.bottom) {
+            this.speedY = -12.0;
+        }
     }
 
+    endJump()
+    {
+        if (this.speedY < -6.0)
+            this.speedY = -6.0;
+    }
     checkCollision() {
 
         var that = this;
@@ -322,22 +431,22 @@ class Coin extends Parent {
     }
 }
 
-class Cup extends Parent{
+class Cup extends Parent {
     constructor(x, y, w, h, color) {
         super(x, y, w, h);
         this.color = color;
         this.opacity = 50;
     }
-    checkAvailablity(){
+    checkAvailablity() {
         if (coins.length == 0) {
             this.opacity = 100;
         }
-        else{
+        else {
             this.opacity = 50;
         }
     }
 
-    drawCup(){
+    drawCup() {
         this.checkAvailablity();
         fill(...this.color, this.opacity);
         rect(this.x, this.y, this.w, this.h);

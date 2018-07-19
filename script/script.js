@@ -69,3 +69,14 @@ function mousePressed() {
         }
     }
 }
+
+
+function keyPressed(){
+    if(keyCode == UP_ARROW){
+        player.startJump()
+    }
+}
+
+function keyReleased(){
+    player.endJump()
+}
