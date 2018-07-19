@@ -15,6 +15,7 @@ class Player extends Parent {
         this.accelaration = a;
         this.limit = false;
         this.color = c;
+        this.eatenCoins = 0;
         this.collision = {
             right: false,
             left: false,
@@ -26,11 +27,10 @@ class Player extends Parent {
     animate() {
         translate(x, y)
         if (!gameStarted) {
-            fill(...this.color, playerOpacity)
+            fill(...this.color, playerOpacity);
         }
         else {
             fill(...this.color);
-            // player.move();
         }
         rect(this.x, this.y, this.w, this.h);
         translate(-x, -y)
@@ -43,11 +43,15 @@ class Player extends Parent {
         // this.die();
     }
 
+    prepare() {
+        this.edit();
+        if (!playerEditing) this.snap();
+
+    }
     move() {
         if (keyIsDown(LEFT_ARROW) && !this.collision.left) {
             if (this.x > 0) {
                 this.x -= this.speedX;
-                // console.log(canvasWidth, backgroundSize, x)
                 if (x < 0) {
                     x += this.speedX
                 }
@@ -65,7 +69,6 @@ class Player extends Parent {
 
         if (keyIsDown(UP_ARROW) && !this.collision.up && !this.limit) {
             if (this.speedY > -5) {
-                // console.log(this.speedY)
                 this.speedY -= this.accelaration
             }
             else {
@@ -90,11 +93,17 @@ class Player extends Parent {
     checkCollision() {
 
         var that = this;
-        var bottom = blocks.find(function (block) {
+        var arrayY = [];
+        var bottomColls = blocks.filter(function (block) {
             return ((block.y + block.h / 2) - (that.y + that.h / 2) <= that.h / 2 + block.h / 2) &&
                 ((block.y + block.h / 2) - (that.y + that.h / 2)) >= that.h / 2
                 && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2 - that.speedX;
         });
+
+        bottomColls.forEach(function (block) { arrayY.push(block.y) });
+
+        var index = arrayY.indexOf(Math.min(...arrayY))
+        var bottom = bottomColls[index];
 
         var right = blocks.find(function (block) {
             return ((block.x + block.w / 2) - (that.x + that.w / 2) <= that.w / 2 + block.w / 2) &&
@@ -116,13 +125,20 @@ class Player extends Parent {
 
         if (bottom) {
             this.collision.down = true;
-            this.y = bottom.y - this.h;
+            this.y = bottom.y - this.h - 1;
+            if (bottom.type == "Horizontal" && !left && !right) {
+                this.x += bottom.dirX
+            }
+            else if (bottom.type == "Sand") {
+                bottom.break()
+            }
         }
         else
             this.collision.down = false;
         if (up) {
             this.collision.up = true;
-            this.y = up.y + up.h;
+            if (!bottom)
+                this.y = up.y + up.h + 1;
         }
         else
             this.collision.up = false;
@@ -136,7 +152,19 @@ class Player extends Parent {
         else
             this.collision.left = false;
 
-        //console.log(this.collision)
+        //coin-part
+        var eaten = coins.filter(function (coin) {
+            return that.x + that.w > coin.x && that.x < coin.x + coin.w && that.y + that.h > coin.y && that.y < coin.y + coin.h
+        });
+        eaten.forEach(function (c) {
+            coins.splice(coins.indexOf(c), 1)
+            player.eatenCoins++;
+        });
+
+        if (this.eatenCoins && coins.length == 0) {
+            fill(0)
+            text(this.eatenCoins, this.x, this.y, this.w, this.h)
+        }
     }
 
     snap() {
@@ -155,86 +183,22 @@ class Player extends Parent {
             }
             else if (this.x + this.w / 2 - (block.x + block.w / 2) > 0 && this.x + this.w / 2 - (block.x + block.w / 2) < (this.w / 2 + block.w / 2) && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2)
                 block.x = this.x - block.w;
+            updateBlocksCoordinates(b)
         }
 
 
     }
 
-    /*    move() {
-        if (keyIsDown(LEFT_ARROW)) {
-            this.x -= this.speedX;
-        }
-        
-        if (keyIsDown(RIGHT_ARROW)) {
-            this.x += this.speedX;
-        }
-        
-        if (!this.limit && keyIsDown(UP_ARROW)) {
-            this.speedY += this.accelaration;
-            playerJumped = true;
-            //console.log(this.speedY)
+    edit() {
+        if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing && mouseX > this.x + x && mouseX < this.x + x + this.w && mouseY > this.y + y && mouseY < this.y + y + this.h && mouseIsPressed) {
+            this.x = mouseX - this.w / 2 - x;
+            this.y = mouseY - this.h / 2 - y;
+            playerEditing = true;
         }
         else {
-            let collBlock = this.checkButtom()
-            if (collBlock) {
-                playerJumped = false;
-                this.y = collBlock.y - this.h;
-            }
+            playerEditing = false;
         }
     }
-    
-    
-    jump() {
-        if (this.speedY < 6) {
-            this.y -= this.speedY;
-        }
-        else {
-            this.limit = true;
-        }
-        this.speedY -= this.gravity;
-    }
-    
-    die() {
-        
-    }
-    
-    fall() {
-        let collBlock = this.checkButtom()
-        if (!collBlock) {
-            this.speedY -= this.gravity;
-            this.y -= this.speedY;
-        }
-        else {
-            this.speedY = 3;
-        }
-    }
-    checkButtom() {
-        let collBlock = blocks.find(function (block) {
-            return player.y - block.y + player.h < player.h / 2 && player.y - block.y + player.h > 0 && player.x - block.x <= block.w && block.x - player.x <= player.w
-        });
-        return collBlock;
-    }
-    checkCollision() {
-        for (var b in blocks) {
-            let block = blocks[b];
-            if (this.y - block.y + this.h < this.h / 2 && this.y - block.y + this.h > 0 && this.x - block.x <= block.w && block.x - this.x <= this.w) {
-                
-                block.y = this.y + this.h;
-            }
-            else if (block.y - this.y + block.h < this.h / 2 && block.y - this.y + block.h > 0 && block.x - this.x <= this.w && this.x - block.x <= block.w) {
-                block.y = this.y - block.h;
-            }
-            else if (this.x + this.w / 2 - (block.x + block.w / 2) < 0 && this.x + this.w / 2 - (block.x + block.w / 2) > -(this.w / 2 + block.w / 2) && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2) {
-                
-                block.x = this.x + this.w;
-            }
-            else if (this.x + this.w / 2 - (block.x + block.w / 2) > 0 && this.x + this.w / 2 - (block.x + block.w / 2) < (this.w / 2 + block.w / 2) && Math.abs((this.y + this.h / 2) - (block.y + block.h / 2)) < this.h / 2 + block.h / 2)
-            block.x = this.x - this.w;
-            }
- 
-        }
-        
-        */
 }
 
 class Block extends Parent {
@@ -268,14 +232,14 @@ class HorizontalBlock extends Block {
     move() {
         if (this.x + this.w / 2 > this.staticX + this.editRange || this.x + this.w / 2 < this.staticX) {
             this.dirX *= -1;
-            // console.log(this.x, this.staticX, this.editRange)
         }
         this.x += this.dirX;
     }
 
     edit() {
         if (mouseIsPressed) {
-            if (editedBlocksID != this.id && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY > this.editor.y + y && mouseY < this.editor.y + y + this.editor.h) {
+            if ((editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY > this.editor.y + y && mouseY < this.editor.y + y + this.editor.h && mouseX - x - this.editor.w / 2 >= this.x + this.w) {
+                blockRangeEditing = true;
                 this.editor.x = mouseX - this.editor.w / 2 - x;
                 this.editRange = this.editor.x + this.editor.w / 2 - (this.x + this.w / 2);
             }
@@ -298,17 +262,17 @@ class VerticalBlock extends Block {
         }
     }
     move() {
-        if (this.y + this.h / 2 > this.staticY + this.editRange || this.y + this.h / 2 < this.staticY) {
+        if (this.y + this.h / 2 > this.staticY + this.editRange || this.y + this.h / 2 < this.staticY || player.collision.top) {
             this.dirY *= -1;
-            //console.log(this.y, this.staticY, this.editRange)
         }
         this.y += this.dirY;
     }
 
     edit() {
         if (mouseIsPressed) {
-            if (editedBlocksID != this.id && mouseY > this.editor.y + y && mouseY < this.editor.y + this.editor.h + y && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x) {
-                this.editor.y = mouseY - this.editor.h / 2;
+            if ((editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && mouseY > this.editor.y + y && mouseY < this.editor.y + this.editor.h + y && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY - this.editor.h / 2 >= this.y + this.h) {
+                blockRangeEditing = true;
+                this.editor.y = mouseY - this.editor.h / 2 + y;
                 this.editRange = this.editor.y + this.editor.h / 2 - (this.y + this.h / 2);
             }
         }
@@ -319,9 +283,14 @@ class VerticalBlock extends Block {
 class SandBlock extends Block {
     constructor(x, y, w, h, type, color, id) {
         super(x, y, w, h, type, color, id);
+        this.strength = 5;
+        this.startedBreaking = false;
     }
     break() {
-
+        if (!this.startedBreaking) {
+            this.startedBreaking = true;
+            sandBreaker(this)
+        }
     }
 }
 
@@ -344,6 +313,22 @@ class DeathBlock extends Block {
         this.slicer.y += this.slicer.dirY;
     }
 
+    kill() {
+        if (Math.abs((this.slicer.x + this.slicer.w / 2) - (player.x + player.w / 2) < this.slicer.w / 2 + player.w / 2) && player.y + player.h > this.slicer.y && player.y + player.h < this.slicer.y + this.slicer.h) {
+            player.color = [255, 0, 0]
+        }
+        else {
+            player.color = playerColor;
+        }
+    }
+
 }
 
-player = new Player(playerStartingX, playerStartingY, playerWidth, playerHeight , playerVX, playerVY, playerA, playerColor);
+
+class Coin extends Parent {
+    constructor(x, y, w, h, color) {
+        super(x, y, w, h);
+        this.color = color;
+    }
+}
+player = new Player(playerStartingX, playerStartingY, playerWidth, playerHeight, playerVX, playerVY, playerA, playerColor);

@@ -27,7 +27,7 @@ var playerHeight = 110;
 var blocks = [];
 var tools = [];
 var seaArr = [];
-var toolsFunctions = ["Play", "Stone", "Horizontal", "Vertical", "Sand", "Death", "Win"];
+var toolsFunctions = ["Play", "Stone", "Horizontal", "Vertical", "Sand", "Death","Coin", "Win"];
 
 var waveSize = 20;
 var toolBarHeight = canvasHeight / 8;
@@ -64,8 +64,15 @@ var horizontalBlocksRange = 150;
 var verticalBlocksRange = 75;
 
 var editedBlocksID;
+var editedCoinsID;
+var playerEditing = false;
+var blockRangeEditing = false;
 
 var playerVX = 3;
 var playerVY = 3;
 var playerA = 0.4;
 var deathBlockSlicerV = 0.2;
+
+var coins = [];
+var coinColor = [255,100,0];
+var coinSize = 20;

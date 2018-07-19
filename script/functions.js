@@ -48,13 +48,13 @@ function checkMouseMovement() {
             seaArr.map(function (item) {
                 return item.x > 0 - item.size / 2 ? item.x-- : item.x = width + item.size / 2;
             });
-            x-=2;
+            x -= 2;
         }
         else if (mouseX < width / backgroundEditRange && x < 0) {
             seaArr.map(function (item) {
                 return item.x < width + item.size / 2 ? item.x++ : item.x = -item.size / 2;
             });
-            x+=2;
+            x += 2;
         }
     }
 }
@@ -63,7 +63,8 @@ function toolBarFunction() {
     var tool = Math.floor(mouseX / tools[0].size);
     if (tools[tool].f == 'Play') {
         character();
-        x = 0
+        if (x > width - backgroundSize && playerStartingX - player.x <= 0)
+            x = playerStartingX - player.x
     }
     if (!gameStarted) {
         if (tools[tool].f == 'Stone') {
@@ -85,6 +86,9 @@ function toolBarFunction() {
         else if (tools[tool].f == 'Death') {
             //                                                                                                                                                        block.slicer.dirY
             blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Death', metalColor, blocks.length, deathBlockSlicerV));
+        }
+        else if (tools[tool].f == 'Coin') {
+            coins.push(new Coin(tools[tool].x - x,  tools[tool].y - y + toolBarHeight, coinSize, coinSize, coinColor));
         }
     }
 }
@@ -113,24 +117,41 @@ function drawBlocks() {
 
         else if (block.type == 'Death') {
 
-            if (gameStarted)
+            if (gameStarted) {
                 block.move();
-
+                block.kill();
+            }
             fill(...deathBlockSlicerColor);
             rect(block.slicer.x, block.slicer.y, block.slicer.w, block.slicer.h)
         }
         fill(...block.color)
         rect(block.x, block.y, block.w, block.h, blocksRoundedCorners);
+        if (block.type == 'Sand') {
+            fill(255)
+            textAlign(CENTER, CENTER)
+            text(block.strength, block.x, block.y, block.w, block.h)
+        }
     }
     noStroke();
+
+    coins.forEach(function (coin) {
+        fill(...coin.color)
+        rect(coin.x, coin.y, coin.w, coin.h)
+    });
 }
 
 
 function editBlocks() {
     var blockIndex = blocks.findIndex(function (b) {
-        return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h;
+        return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) ;
     });
     return blockIndex
+}
+function editCoins() {
+    var coinIndex = coins.findIndex(function (b) {
+        return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h && !playerEditing && (editedBlocksID == undefined || editedBlocksID < 0) ;
+    });
+    return coinIndex
 }
 
 function updateBlocksCoordinates(i) {
@@ -150,5 +171,17 @@ function updateBlocksCoordinates(i) {
         blocks[i].slicer.x = blocks[i].x;
     }
 
+
+}
+
+function sandBreaker(obj) {
+    var breakInt = setInterval(function () {
+        var i = blocks.indexOf(obj)
+        blocks[i].strength--;
+        if (blocks[i].strength == 0) {
+            blocks.splice(i, 1)
+            clearInterval(breakInt)
+        }
+    }, 1000)
 
 }

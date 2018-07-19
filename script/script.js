@@ -20,8 +20,6 @@ function setup() {
             f: toolsFunctions[i]
         })
     }
-
-
 }
 
 function draw() {
@@ -30,23 +28,31 @@ function draw() {
     if (gameStarted) {
         player.play();
     }
-    else{
-        player.snap()
+    else {
+        player.prepare();
     }
     if (mouseIsPressed) {
         if (editedBlocksID >= 0) {
             blocks[editedBlocksID].x = mouseX - x - blocks[editedBlocksID].w / 2;
-            blocks[editedBlocksID].y = mouseY - blocks[editedBlocksID].h / 2;
+            blocks[editedBlocksID].y = mouseY - y - blocks[editedBlocksID].h / 2;
             updateBlocksCoordinates(editedBlocksID)
+        }
+        if (editedCoinsID >= 0) {
+            coins[editedCoinsID].x = mouseX - x - coins[editedCoinsID].w / 2;
+            coins[editedCoinsID].y = mouseY - y - coins[editedCoinsID].h / 2;
         }
     }
 }
 
 function mouseReleased() {
-    if (editedBlocksID >= 0) {
+    if (editedBlocksID >= 0 && editedBlocksID != undefined) {
         blocks[editedBlocksID].deleteBlock()
         editedBlocksID = undefined;
     }
+    if (editedCoinsID >= 0 && editedCoinsID != undefined) {
+        editedCoinsID = undefined;
+    }
+    blockRangeEditing = false;
 }
 
 function mousePressed() {
@@ -57,8 +63,8 @@ function mousePressed() {
         else {
             if (!gameStarted) {
                 editedBlocksID = editBlocks();
+                editedCoinsID = editCoins();
             }
         }
     }
-
 }
