@@ -68,26 +68,9 @@ class Player extends Parent {
         }
 
         if (keyIsDown(UP_ARROW) && !this.collision.up && !this.limit) {
-            if (this.speedY > -5) {
-                this.speedY -= this.accelaration
-            }
-            else {
-                // console.log(this.limit)
-                // if (this.limit) {
-                this.speedY = 0;
-                this.limit = true;
-                //}
-            }
+
         }
 
-        if (!this.collision.down) {
-            this.speedY += gravity;
-        }
-        else {
-            this.limit = false;
-        }
-
-        this.y += this.speedY;
     }
 
     checkCollision() {
@@ -142,12 +125,19 @@ class Player extends Parent {
         }
         else
             this.collision.up = false;
-        if (right)
+        if (right) {
             this.collision.right = true;
+            if (!left && right.type == "Horizontal") {
+                this.x = right.x - this.w - 1
+            }
+        }
         else
             this.collision.right = false;
         if (left) {
             this.collision.left = true;
+            if (!right && left.type == "Horizontal") {
+                this.x = left.x + left.w + 1;
+            }
         }
         else
             this.collision.left = false;
@@ -161,10 +151,10 @@ class Player extends Parent {
             player.eatenCoins++;
         });
 
-        if (this.eatenCoins && coins.length == 0) {
+        /*if (this.eatenCoins && coins.length == 0) {
             fill(0)
             text(this.eatenCoins, this.x, this.y, this.w, this.h)
-        }
+        }*/
     }
 
     snap() {
@@ -238,7 +228,7 @@ class HorizontalBlock extends Block {
 
     edit() {
         if (mouseIsPressed) {
-            if ((editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY > this.editor.y + y && mouseY < this.editor.y + y + this.editor.h && mouseX - x - this.editor.w / 2 >= this.x + this.w) {
+            if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !playerEditing && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY > this.editor.y + y && mouseY < this.editor.y + y + this.editor.h && mouseX - x - this.editor.w / 2 >= this.x + this.w) {
                 blockRangeEditing = true;
                 this.editor.x = mouseX - this.editor.w / 2 - x;
                 this.editRange = this.editor.x + this.editor.w / 2 - (this.x + this.w / 2);
@@ -270,7 +260,7 @@ class VerticalBlock extends Block {
 
     edit() {
         if (mouseIsPressed) {
-            if ((editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && mouseY > this.editor.y + y && mouseY < this.editor.y + this.editor.h + y && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY - this.editor.h / 2 >= this.y + this.h) {
+            if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !playerEditing && mouseY > this.editor.y + y && mouseY < this.editor.y + this.editor.h + y && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY - this.editor.h / 2 >= this.y + this.h) {
                 blockRangeEditing = true;
                 this.editor.y = mouseY - this.editor.h / 2 + y;
                 this.editRange = this.editor.y + this.editor.h / 2 - (this.y + this.h / 2);
@@ -307,14 +297,14 @@ class DeathBlock extends Block {
     }
 
     move() {
-        if (this.slicer.y + this.slicer.h < this.y || this.y - this.slicer.y <= this.slicer.h - this.h) {
+        if (this.slicer.y + this.slicer.h < this.y || this.y - this.slicer.y < this.slicer.h - this.h) {
             this.slicer.dirY *= -1
         }
         this.slicer.y += this.slicer.dirY;
     }
 
     kill() {
-        if (Math.abs((this.slicer.x + this.slicer.w / 2) - (player.x + player.w / 2) < this.slicer.w / 2 + player.w / 2) && player.y + player.h > this.slicer.y && player.y + player.h < this.slicer.y + this.slicer.h) {
+        if (Math.abs((this.slicer.x + this.slicer.w / 2) - (player.x + player.w / 2)) < this.slicer.w / 2 + player.w / 2 && player.y + player.h > this.slicer.y && player.y + player.h < this.slicer.y + this.slicer.h) {
             player.color = [255, 0, 0]
         }
         else {

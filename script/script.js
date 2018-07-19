@@ -57,6 +57,7 @@ function mouseReleased() {
 
 function mousePressed() {
     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+        restart()
         if (mouseY <= toolBarHeight) {
             toolBarFunction();
         }

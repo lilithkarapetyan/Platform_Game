@@ -95,7 +95,11 @@ function toolBarFunction() {
 
 function character() {
     if (gameStarted) {
-        location.reload(true)
+        //location.reload(true)
+        gameStarted = false;
+        player.x = playerStartingX;
+        player.y = playerStartingY;
+
     }
     else
         gameStarted = true;
@@ -184,4 +188,15 @@ function sandBreaker(obj) {
         }
     }, 1000)
 
+}
+
+function restart(){
+    //console.log(mouseX > deleteButton.x, mouseX < deleteButton.x + deleteButton.w, mouseY > deleteButton.y, mouseY < deleteButton.y + deleteButton.h)
+    if(mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing){
+        blocks = [];
+        player.x = playerStartingX;
+        player.y = playerStartingY;
+        coins = [];
+
+    }
 }
