@@ -10,6 +10,7 @@ function drawBackground(x, y) {
     drawBlocks();
     translate(-x, -y);
     drawToolBar();
+    cup.drawCup();
 }
 
 function drawToolBar() {
@@ -105,7 +106,6 @@ function character() {
         gameStarted = true;
 }
 
-//REVIEW
 function drawBlocks() {
     for (var block of blocks) {
         if (block.type == 'Horizontal' || block.type == 'Vertical') {
@@ -144,13 +144,13 @@ function drawBlocks() {
     });
 }
 
-
 function editBlocks() {
     var blockIndex = blocks.findIndex(function (b) {
         return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) ;
     });
     return blockIndex
 }
+
 function editCoins() {
     var coinIndex = coins.findIndex(function (b) {
         return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h && !playerEditing && (editedBlocksID == undefined || editedBlocksID < 0) ;
@@ -191,7 +191,6 @@ function sandBreaker(obj) {
 }
 
 function restart(){
-    //console.log(mouseX > deleteButton.x, mouseX < deleteButton.x + deleteButton.w, mouseY > deleteButton.y, mouseY < deleteButton.y + deleteButton.h)
     if(mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing){
         blocks = [];
         player.x = playerStartingX;

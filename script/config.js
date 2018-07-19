@@ -15,6 +15,7 @@ var metalColor = [170, 170, 170];
 var sandColor = [255, 120, 100];
 var deathBlockSlicerColor = [255, 0, 0]
 
+var player, cup;
 var playerColor = [230, 230, 0];
 var playerOpacity = 50;
 
@@ -24,6 +25,12 @@ var playerStartingY = 200;
 var playerWidth = 110;
 var playerHeight = 110;
 
+var cupColor = [255,100,120];
+var cupWidth = 75;
+var cupHeight = 75;
+ 
+var cupStartingX = canvasWidth - playerStartingX - cupWidth
+var cupStartingY = playerStartingY
 var blocks = [];
 var tools = [];
 var seaArr = [];

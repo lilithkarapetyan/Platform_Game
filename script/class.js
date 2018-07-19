@@ -48,6 +48,7 @@ class Player extends Parent {
         if (!playerEditing) this.snap();
 
     }
+    
     move() {
         if (keyIsDown(LEFT_ARROW) && !this.collision.left) {
             if (this.x > 0) {
@@ -314,11 +315,35 @@ class DeathBlock extends Block {
 
 }
 
-
 class Coin extends Parent {
     constructor(x, y, w, h, color) {
         super(x, y, w, h);
         this.color = color;
     }
 }
+
+class Cup extends Parent{
+    constructor(x, y, w, h, color) {
+        super(x, y, w, h);
+        this.color = color;
+        this.opacity = 50;
+    }
+    checkAvailablity(){
+        if (coins.length == 0) {
+            this.opacity = 100;
+        }
+        else{
+            this.opacity = 50;
+        }
+    }
+
+    drawCup(){
+        this.checkAvailablity();
+        fill(...this.color, this.opacity);
+        rect(this.x, this.y, this.w, this.h);
+    }
+}
+
+
 player = new Player(playerStartingX, playerStartingY, playerWidth, playerHeight, playerVX, playerVY, playerA, playerColor);
+cup = new Cup(cupStartingX, cupStartingY, cupWidth, cupHeight, cupColor);
