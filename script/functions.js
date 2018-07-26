@@ -248,9 +248,10 @@ function fix() {
 function saveCoords() {
     var json = JSON.stringify(data)
     var encoded = encodeURI(json)
-    console.log(json);
-    console.log(encoded);
-    var decoded = decodeURI(encoded)
-    console.log(decoded)
-    console.log(JSON.parse(decoded))
+    var t = location.href + "?data="+encoded;
+    console.log(t);
+    //console.log(encoded);
+    //var decoded = decodeURI(encoded)
+    //console.log(decoded)
+    ///console.log(JSON.parse(decoded))
 }
