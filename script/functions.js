@@ -1,16 +1,18 @@
 function drawBackground(x, y) {
     if (!mouseIsPressed)
         checkMouseMovement();
-    translate(x, y)
-    background(...backgroundColor)
-    translate(-x, -y)
+    for (var i = 0; i <= backgroundSize / width; i++) {
+        if (x > -width)
+            image(backgroundImg, x + i * width, y, width, height)
+    }
     fill(...seaColor);
     drawSea();
-    translate(x, y)
+    translate(x, y);
+    player.animate()
     drawBlocks();
+    cup.drawCup();
     translate(-x, -y);
     drawToolBar();
-    cup.drawCup();
 }
 
 function drawToolBar() {
@@ -66,37 +68,38 @@ function toolBarFunction() {
         character();
         if (x > width - backgroundSize && playerStartingX - player.x <= 0)
             x = playerStartingX - player.x
+    }else if(tools[tool].f == "Save"){
+        socket.emit('save', JSON.stringify(blocks))
     }
     if (!gameStarted) {
         if (tools[tool].f == 'Stone') {
             //                    _____block.x____,_______________block.y_____________,__block.w__,__block.h__,block.type, block.color,__block.id__
-            blocks.push(new Block(tools[tool].x - x, tools[tool].y - y + toolBarHeight, stoneWidth, stoneHeight, 'Stone', stoneColor, blocks.length));
+            blocks.push(new Block(tools[tool].x - x, tools[tool].y - y + toolBarHeight, stoneWidth, stoneHeight, stoneImg, 'Stone', stoneColor, blocks.length));
         }
         else if (tools[tool].f == 'Horizontal') {
             //                                                                                                                                                                  block.dirX             block.editRange
-            blocks.push(new HorizontalBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, horizontalBlocksRange));
+            blocks.push(new HorizontalBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, metalImg, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, horizontalBlocksRange));
         }
         else if (tools[tool].f == 'Vertical') {
             //                                                                                                                                                              block.dirY           block.editRange
-            blocks.push(new VerticalBlock(tools[tool].x - x, tools[tool].y + toolBarHeight - y, metalBlocksWidth, metalBlocksHeight, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, verticalBlocksRange));
+            blocks.push(new VerticalBlock(tools[tool].x - x, tools[tool].y + toolBarHeight - y, metalBlocksWidth, metalBlocksHeight, metalImg, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, verticalBlocksRange));
         }
         else if (tools[tool].f == 'Sand') {
 
-            blocks.push(new SandBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, sandWidth, sandHeight, 'Sand', sandColor, blocks.length));
+            blocks.push(new SandBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, sandWidth, sandHeight, sandImg, 'Sand', sandColor, blocks.length));
         }
         else if (tools[tool].f == 'Death') {
             //                                                                                                                                                        block.slicer.dirY
-            blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, 'Death', metalColor, blocks.length, deathBlockSlicerV));
+            blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, metalImg, 'Death', metalColor, blocks.length, deathBlockSlicerV));
         }
         else if (tools[tool].f == 'Coin') {
-            coins.push(new Coin(tools[tool].x - x,  tools[tool].y - y + toolBarHeight, coinSize, coinSize, coinColor));
+            coins.push(new Coin(tools[tool].x - x, tools[tool].y - y + toolBarHeight, coinSize, coinSize, undefined, coinColor));
         }
     }
 }
 
 function character() {
     if (gameStarted) {
-        //location.reload(true)
         gameStarted = false;
         player.x = playerStartingX;
         player.y = playerStartingY;
@@ -125,11 +128,15 @@ function drawBlocks() {
                 block.move();
                 block.kill();
             }
-            fill(...deathBlockSlicerColor);
-            rect(block.slicer.x, block.slicer.y, block.slicer.w, block.slicer.h)
+            image(slicerImg, block.slicer.x, block.slicer.y - block.slicer.h, block.slicer.w, block.slicer.h * 2)
         }
         fill(...block.color)
-        rect(block.x, block.y, block.w, block.h, blocksRoundedCorners);
+        if (block.img) {
+            image(block.img, block.x, block.y, block.w, block.h, blocksRoundedCorners)
+        }
+        else
+            rect(block.x, block.y, block.w, block.h, blocksRoundedCorners);
+
         if (block.type == 'Sand') {
             fill(255)
             textAlign(CENTER, CENTER)
@@ -139,21 +146,20 @@ function drawBlocks() {
     noStroke();
 
     coins.forEach(function (coin) {
-        fill(...coin.color)
-        rect(coin.x, coin.y, coin.w, coin.h)
+        image(coinImg, coin.x, coin.y, coin.h, coin.w);
     });
 }
 
 function editBlocks() {
     var blockIndex = blocks.findIndex(function (b) {
-        return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) ;
+        return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0);
     });
     return blockIndex
 }
 
 function editCoins() {
     var coinIndex = coins.findIndex(function (b) {
-        return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h && !playerEditing && (editedBlocksID == undefined || editedBlocksID < 0) ;
+        return mouseX - x > b.x && mouseX - x < b.x + b.w && mouseY - y > b.y && mouseY - y < b.y + b.h && !playerEditing && (editedBlocksID == undefined || editedBlocksID < 0);
     });
     return coinIndex
 }
@@ -190,12 +196,13 @@ function sandBreaker(obj) {
 
 }
 
-function restart(){
-    if(mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing){
+function restart() {
+    if (mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing) {
         blocks = [];
         player.x = playerStartingX;
         player.y = playerStartingY;
         coins = [];
+        player.speedY = 0
 
     }
 }

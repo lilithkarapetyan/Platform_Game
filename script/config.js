@@ -5,11 +5,18 @@ var x = 0;
 var y = 0;
 
 var gameStarted = false;
-var gravity = 0.2;
+var gravity = 0.5;
 
-var backgroundColor = [226, 249, 255];
-var toolBarColor = [255, 200, 61];
-var seaColor = [33, 118, 255];
+var stoneImgURL = 'images/brickWall.png';
+var stoneImg;
+var sandImgURL = 'images/grassCenter_rounded.png';//'images/sand.png'
+var sandImg;
+var metalImgURL = 'images/grassMid.png';//'images/metal.png'
+var metalImg;
+
+var backgroundColor = [192, 232, 236];
+var toolBarColor = [246, 192, 143];
+var seaColor = [56, 161, 193];
 var stoneColor = [205, 82, 82];
 var metalColor = [170, 170, 170];
 var sandColor = [255, 120, 100];
@@ -19,22 +26,44 @@ var player, cup;
 var playerColor = [230, 230, 0];
 var playerOpacity = 50;
 
-var player, playerWalk;
+var player;
 var playerStartingX = 100;
 var playerStartingY = 200;
-var playerWidth = 110;
-var playerHeight = 110;
+var playerWidth = 70;
+var playerHeight = 94;
 
-var cupColor = [255,100,120];
-var cupWidth = 75;
+var playerWalkFrames = 11;
+var playerSprite = "images/p2_spritesheet.png"
+var playerWalk0 = [0, 0, 70, 94];
+var playerWalk1 = [71, 0, 70, 94];
+var playerWalk2 = [142, 0, 70, 94];
+var playerWalk3 = [0, 95, 70, 94];
+var playerWalk4 = [71, 95, 70, 94];
+var playerWalk5 = [142, 95, 70, 94];
+var playerWalk6 = [213, 0, 70, 94];
+var playerWalk7 = [284, 0, 70, 94];
+var playerWalk8 = [213, 95, 70, 94];
+var playerWalk9 = [355, 0, 70, 94];
+var playerWalk10 = [284, 95, 70, 94];
+var playerStand = [67, 190, 66, 92];
+
+var cupImg  = "images/iceCream.png";
+var coinImg = "images/hud_coins.png";
+
+var slicerImg = "images/slicer.png";
+var backgroundImg = "images/bg.png"
+
+var cupColor = [255, 100, 120];
+var cupWidth = 45;
 var cupHeight = 75;
- 
+var cupEditing = false;
+
 var cupStartingX = canvasWidth - playerStartingX - cupWidth
 var cupStartingY = playerStartingY
 var blocks = [];
 var tools = [];
 var seaArr = [];
-var toolsFunctions = ["Play", "Stone", "Horizontal", "Vertical", "Sand", "Death","Coin", "Win"];
+var toolsFunctions = ["Play", "Stone", "Horizontal", "Vertical", "Sand", "Death", "Coin", "Save"];
 
 var waveSize = 20;
 var toolBarHeight = canvasHeight / 8;
@@ -45,7 +74,7 @@ var deleteButton = {
     size: 15,
     x: canvasWidth - 2 * 15, // - 2* size
     y: toolBarHeight + 15,   // + size
-    color: [255, 150, 150],
+    color: [255, 145, 145],
     strokeWeight: 10
 }
 
@@ -81,5 +110,5 @@ var playerA = 0.4;
 var deathBlockSlicerV = 0.2;
 
 var coins = [];
-var coinColor = [255,100,0];
+var coinColor = [255, 100, 0];
 var coinSize = 20;

@@ -1,3 +1,16 @@
+var socket  = io.connect('http://localhost');
+
+function preload() {
+    stoneImg = loadImage(stoneImgURL);
+    sandImg = loadImage(sandImgURL);
+    metalImg = loadImage(metalImgURL);
+    playerSprite = loadImage(playerSprite);
+    coinImg = loadImage(coinImg);
+    cupImg = loadImage(cupImg);
+    slicerImg = loadImage(slicerImg);
+    backgroundImg = loadImage(backgroundImg);
+}
+
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
     background(...backgroundColor);
@@ -24,12 +37,13 @@ function setup() {
 
 function draw() {
     drawBackground(x, y);
-    player.animate()
+
     if (gameStarted) {
         player.play();
     }
     else {
         player.prepare();
+        cup.edit();
     }
     if (mouseIsPressed) {
         if (editedBlocksID >= 0) {
@@ -57,7 +71,7 @@ function mouseReleased() {
 
 function mousePressed() {
     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-        restart()
+        restart();
         if (mouseY <= toolBarHeight) {
             toolBarFunction();
         }
@@ -71,12 +85,14 @@ function mousePressed() {
 }
 
 
-function keyPressed(){
-    if(keyCode == UP_ARROW){
-        player.startJump()
+function keyPressed() {
+    if (keyCode == UP_ARROW) {
+        player.startJump();
     }
 }
 
-function keyReleased(){
-    player.endJump()
+function keyReleased() {
+    if (keyCode == UP_ARROW) {
+        player.endJump();
+    }
 }
