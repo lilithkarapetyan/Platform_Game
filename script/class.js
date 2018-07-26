@@ -14,9 +14,9 @@ class Player extends Parent {
         this.speedX = VX;
         this.speedY = 0;
         this.accelaration = a;
-        this.limit = false;
         this.color = c;
         this.won = false;
+        this.dead = false;
         this.eatenCoins = 0;
         this.collision = {
             right: false,
@@ -35,13 +35,15 @@ class Player extends Parent {
         else {
             fill("red")
             rect(this.x, this.y, this.w, this.h)
-            image(playerSprite, this.x - 15, this.y, playerWalkSprite.w, playerWalkSprite.h, window['playerWalk'+ this.walkCounter].x, window['playerWalk'+ this.walkCounter].y,playerWalkSprite.w, playerWalkSprite.h );
+            image(playerSprite, this.x - 15, this.y, playerWalkSprite.w, playerWalkSprite.h, window['playerWalk' + this.walkCounter].x, window['playerWalk' + this.walkCounter].y, playerWalkSprite.w, playerWalkSprite.h);
         }
     }
 
     play() {
-        this.move();
-        this.checkCollision();
+        if (!player.dead && !player.won) {
+            this.move();
+            this.checkCollision();
+        }
     }
 
     prepare() {
@@ -51,6 +53,7 @@ class Player extends Parent {
     }
 
     move() {
+
         if (keyIsDown(LEFT_ARROW) && !this.collision.left) {
             this.dirX = -1;
             this.walkCounter++;
@@ -87,7 +90,7 @@ class Player extends Parent {
         }
 
         if (this.y >= seaStartingY) {
-            this.die()
+            this.die();
         }
     }
 
@@ -160,7 +163,7 @@ class Player extends Parent {
         if (right) {
             if (bottom) {
                 if (right.x != bottom.x && right.y != bottom.y) {
-                    console.log(right, bottom)
+                    //console.log(right, bottom)
                     this.collision.right = true;
                     if (!this.collision.left && right.type == "Horizontal") {
                         this.x = right.x - this.w
@@ -184,8 +187,8 @@ class Player extends Parent {
                 //left.x != bottom.x && left.y != bottom.y
                 if (left.x != bottom.x && left.y != bottom.y) {
                     this.collision.left = true;
-                    if (!this.collision.right ) {
-                        
+                    if (!this.collision.right) {
+
                         this.x = left.x + left.w;
                     }
                 }
@@ -194,7 +197,7 @@ class Player extends Parent {
                 }
             } else if (!bottom) {
                 this.collision.left = true;
-                if (!this.collision .right && left.type == "Horizontal") {
+                if (!this.collision.right && left.type == "Horizontal") {
                     this.x = left.x + left.w;
                 }
             }
@@ -257,11 +260,10 @@ class Player extends Parent {
 
     win() {
         this.won = true;
-        this.play = function(){}
     }
 
     die() {
-        this.play = function(){}
+        this.dead = true;
     }
 }
 
@@ -417,7 +419,7 @@ class Cup extends Parent {
     drawCup() {
         this.checkAvailablity();
         //fill(...this.color, this.opacity);
-        tint(255, this.alpha*255)
+        tint(255, this.alpha * 255)
         image(cupImg, this.x, this.y, this.w, this.h);
         tint(255, 255);
     }

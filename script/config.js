@@ -105,7 +105,7 @@ var playerEditing = false;
 var blockRangeEditing = false;
 
 var playerVX = 3;
-var playerVY = 3;
+var playerVY = 0;
 var playerA = 0.4;
 var deathBlockSlicerV = 0.2;
 
@@ -113,7 +113,4 @@ var coins = [];
 var coinColor = [255, 100, 0];
 var coinSize = 20;
 
-
-/*for(var i  = 0; i < playerWalkFrames; i++){
-    window['playerWalk' + i][0]+=10;
-}*/
+var data;

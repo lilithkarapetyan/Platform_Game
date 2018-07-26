@@ -18,7 +18,7 @@ function drawBackground(x, y) {
 function drawToolBar() {
     for (var i = 0; i < tools.length; i++) {
         fill(...tools[i].color);
-        if (tools[i].f == "Save" && !player.won){
+        if (tools[i].f == "Save" && !player.won) {
             fill(...tools[i].color, 50);
         }
 
@@ -66,11 +66,12 @@ function checkMouseMovement() {
 function toolBarFunction() {
     var tool = Math.floor(mouseX / tools[0].size);
     if (tools[tool].f == 'Play') {
-        character();
+        
+        start();
         if (x > width - backgroundSize && playerStartingX - player.x <= 0)
             x = playerStartingX - player.x
     } else if (tools[tool].f == "Save" && player.won) {
-        console.log("player won")
+        saveCoords();
     }
     if (!gameStarted) {
         if (tools[tool].f == 'Stone') {
@@ -99,15 +100,25 @@ function toolBarFunction() {
     }
 }
 
-function character() {
+function start() {
     if (gameStarted) {
-        gameStarted = false;
-        player.x = playerStartingX;
-        player.y = playerStartingY;
 
+        gameStarted = false;
+        player.x = data.player.x;
+        player.y = data.player.y;
+
+        player.won = false;
+        player.dead = false;
+        player.speedY = playerVY;;
+        player.eatenCoins = 0;
+        player.walkCounter = 0
+        console.log(player)
     }
-    else
+    else{
+        console.log(player, "start")
         gameStarted = true;
+        data = fix();
+    }
 }
 
 function drawBlocks() {
@@ -206,4 +217,40 @@ function restart() {
         player.speedY = 0
 
     }
+}
+
+function fix() {
+    var data = {};
+    data.blocks = [];
+    for (var i = 0; i < blocks.length; i++) {
+        data.blocks[i] = {
+            x: blocks[i].x,
+            y: blocks[i].y,
+            type: blocks[i].type,
+            editRange: blocks[i].editRange ? blocks[i].editRange : undefined
+        }
+    }
+    data.player = { x: player.x, y: player.y };
+    data.coins = [];
+
+    for (var i = 0; i < coins.length; i++) {
+        data.coins[i] = {
+            x: coins[i].x,
+            y: coins[i].y,
+        }
+    }
+
+    data.iceCream = { x: cup.x, y: cup.y }
+
+    return data
+}
+
+function saveCoords() {
+    var json = JSON.stringify(data)
+    var encoded = encodeURI(json)
+    console.log(json);
+    console.log(encoded);
+    var decoded = decodeURI(encoded)
+    console.log(decoded)
+    console.log(JSON.parse(decoded))
 }
