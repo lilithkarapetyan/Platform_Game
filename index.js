@@ -9,9 +9,9 @@ app.get('/', function (req, res) {
    res.redirect('index.html');
 });
 server.listen(3000);
-io.on('connection', function(socket){
+/*io.on('connection', function(socket){
     console.log("hello")
     socket.on('save', function(data){
         console.log(data)
     })
-})
+})*/

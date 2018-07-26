@@ -29,25 +29,25 @@ var playerOpacity = 50;
 var player;
 var playerStartingX = 100;
 var playerStartingY = 200;
-var playerWidth = 70;
+var playerWidth = 40;
 var playerHeight = 94;
-
+var playerWalkSprite = { w: 70, h: 94 }
 var playerWalkFrames = 11;
 var playerSprite = "images/p2_spritesheet.png"
-var playerWalk0 = [0, 0, 70, 94];
-var playerWalk1 = [71, 0, 70, 94];
-var playerWalk2 = [142, 0, 70, 94];
-var playerWalk3 = [0, 95, 70, 94];
-var playerWalk4 = [71, 95, 70, 94];
-var playerWalk5 = [142, 95, 70, 94];
-var playerWalk6 = [213, 0, 70, 94];
-var playerWalk7 = [284, 0, 70, 94];
-var playerWalk8 = [213, 95, 70, 94];
-var playerWalk9 = [355, 0, 70, 94];
-var playerWalk10 = [284, 95, 70, 94];
+var playerWalk0 = { x: 0, y: 0 };
+var playerWalk1 = { x: 71, y: 0 };
+var playerWalk2 = { x: 142, y: 0 };
+var playerWalk3 = { x: 0, y: 95 };
+var playerWalk4 = { x: 71, y: 95 };
+var playerWalk5 = { x: 142, y: 95 };
+var playerWalk6 = { x: 213, y: 0 };
+var playerWalk7 = { x: 284, y: 0 };
+var playerWalk8 = { x: 213, y: 95 };
+var playerWalk9 = { x: 355, y: 0 };
+var playerWalk10 = { x: 284, y: 95 };
 var playerStand = [67, 190, 66, 92];
 
-var cupImg  = "images/iceCream.png";
+var cupImg = "images/iceCream.png";
 var coinImg = "images/hud_coins.png";
 
 var slicerImg = "images/slicer.png";
@@ -112,3 +112,8 @@ var deathBlockSlicerV = 0.2;
 var coins = [];
 var coinColor = [255, 100, 0];
 var coinSize = 20;
+
+
+/*for(var i  = 0; i < playerWalkFrames; i++){
+    window['playerWalk' + i][0]+=10;
+}*/

@@ -18,9 +18,10 @@ function drawBackground(x, y) {
 function drawToolBar() {
     for (var i = 0; i < tools.length; i++) {
         fill(...tools[i].color);
-        if (mouseX > tools[i].x && mouseX < tools[i].x + tools[i].size && mouseY > 0 && mouseY < toolBarHeight) {
-            fill(...tools[i].color)
+        if (tools[i].f == "Save" && !player.won){
+            fill(...tools[i].color, 50);
         }
+
         rect(tools[i].x, 0, width / tools.length, toolBarHeight, toolBarRectCorners);
         textSize(toolBarTextSize)
         textAlign(CENTER, CENTER);
@@ -68,8 +69,8 @@ function toolBarFunction() {
         character();
         if (x > width - backgroundSize && playerStartingX - player.x <= 0)
             x = playerStartingX - player.x
-    }else if(tools[tool].f == "Save"){
-        socket.emit('save', JSON.stringify(blocks))
+    } else if (tools[tool].f == "Save" && player.won) {
+        console.log("player won")
     }
     if (!gameStarted) {
         if (tools[tool].f == 'Stone') {
