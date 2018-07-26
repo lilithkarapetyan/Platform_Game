@@ -33,8 +33,6 @@ class Player extends Parent {
             image(playerSprite, this.x - 15, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
         }
         else {
-            fill("red")
-            rect(this.x, this.y, this.w, this.h)
             image(playerSprite, this.x - 15, this.y, playerWalkSprite.w, playerWalkSprite.h, window['playerWalk' + this.walkCounter].x, window['playerWalk' + this.walkCounter].y, playerWalkSprite.w, playerWalkSprite.h);
         }
     }
