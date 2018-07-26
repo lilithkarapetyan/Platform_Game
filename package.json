@@ -16,10 +16,13 @@
   "bugs": {
     "url": "https://github.com/lilithkarapetyan/platformGames/issues"
   },
-  "homepage": "https://github.com/lilithkarapetyan/platformGames#readme",
+  "homepage": "https://platformgames.herokuapp.com/",
   "dependencies": {
     "express": "^4.16.3",
     "http": "0.0.0",
     "socket.io": "^2.1.1"
+  },
+  "engines": {
+    "node": "4.7.2"
   }
 }
