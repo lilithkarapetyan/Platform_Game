@@ -66,6 +66,7 @@ function mouseReleased() {
     }
     playerEditing = false;
     blockRangeEditing = false;
+    cupEditing = false;
 }
 
 function mousePressed() {
@@ -78,8 +79,13 @@ function mousePressed() {
             if (!gameStarted) {
                 editedBlocksID = editBlocks();
                 editedCoinsID = editCoins();
-                if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !blockRangeEditing && mouseX > this.x + x && mouseX < this.x + x + this.w && mouseY > this.y + y && mouseY < this.y + y + this.h && mouseIsPressed) {
+                if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !blockRangeEditing && mouseX > player.x + x && mouseX < player.x + x + player.w && mouseY > player.y + y && mouseY < player.y + y + player.h) {
                     playerEditing = true;
+                }
+
+                if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing && !playerEditing &&
+                    mouseX > cup.x + x && mouseX < cup.x + x + cup.w && mouseY > cup.y + y && mouseY < cup.y + y + cup.h) {
+                      cupEditing = true;              
                 }
             }
         }
