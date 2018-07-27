@@ -8,7 +8,7 @@ function preload() {
     slicerImg = loadImage(slicerImg);
     backgroundImg = loadImage(backgroundImg);
 }
-
+ 
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
     background(...backgroundColor);
@@ -81,6 +81,14 @@ function mousePressed() {
                 editedCoinsID = editCoins();
                 if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !blockRangeEditing && mouseX > player.x + x && mouseX < player.x + x + player.w && mouseY > player.y + y && mouseY < player.y + y + player.h) {
                     playerEditing = true;
+                }
+                if((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !playerEditing){
+                    blockRangeEditing = blocks.find(function(b){
+                        if(b.editor){
+                            //console.log(b)
+                            return mouseX > b.editor.x + x && mouseX < b.editor.x + b.editor.w + x && mouseY > b.editor.y + y && mouseY < b.editor.y + y + b.editor.h && mouseX - x - b.editor.w / 2 >= b.x + b.w
+                        }
+                    });
                 }
 
                 if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing && !playerEditing &&

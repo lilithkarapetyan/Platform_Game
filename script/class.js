@@ -60,7 +60,7 @@ class Player extends Parent {
             if (this.x > 0) {
                 this.x -= this.speedX;
                 if (x < 0) {
-                    x += this.speedX
+                    x += this.speedX;
                 }
             }
         }
@@ -182,7 +182,6 @@ class Player extends Parent {
             this.collision.right = false;
         if (left) {
             if (bottom) {
-                //left.x != bottom.x && left.y != bottom.y
                 if (left.x != bottom.x && left.y != bottom.y) {
                     this.collision.left = true;
                     if (!this.collision.right) {
@@ -297,14 +296,18 @@ class HorizontalBlock extends Block {
     }
 
     edit() {
-        if (mouseIsPressed) {
-            if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !playerEditing && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY > this.editor.y + y && mouseY < this.editor.y + y + this.editor.h && mouseX - x - this.editor.w / 2 >= this.x + this.w) {
-                blockRangeEditing = true;
-                this.editor.x = mouseX - this.editor.w / 2 - x;
-                this.editRange = this.editor.x + this.editor.w / 2 - (this.x + this.w / 2);
+        if (blockRangeEditing) {
+            //console.log(blockRangeEditing)
+            if (blockRangeEditing.x == this.x && blockRangeEditing.y == this.y) {
+                if(this.editor.x > this.x + this.w/2){
+                    this.editor.x = mouseX - this.editor.w / 2 - x;
+                    this.editRange = this.editor.x + this.editor.w / 2 - (this.x + this.w / 2);
+                }
+                else{
+                    this.editor.x = this.x + this.w/2;
+                }
             }
         }
-
     }
 }
 
@@ -329,15 +332,20 @@ class VerticalBlock extends Block {
     }
 
     edit() {
-        if (mouseIsPressed) {
-            if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !playerEditing && mouseY > this.editor.y + y && mouseY < this.editor.y + this.editor.h + y && mouseX > this.editor.x + x && mouseX < this.editor.x + this.editor.w + x && mouseY - this.editor.h / 2 >= this.y + this.h) {
-                blockRangeEditing = true;
-                this.editor.y = mouseY - this.editor.h / 2 + y;
-                this.editRange = this.editor.y + this.editor.h / 2 - (this.y + this.h / 2);
+        if (blockRangeEditing) {
+            if (blockRangeEditing.x == this.x && blockRangeEditing.y == this.y) {
+                if(this.editor.y > this.y + this.h/2){
+                    this.editor.y = mouseY - this.editor.h / 2 + y;
+                    this.editRange = this.editor.y + this.editor.h / 2 - (this.y + this.h / 2);
+                }
+                else{
+                    this.editor.y = this.y + this.h/2
+                }
             }
         }
-
     }
+
+
 }
 
 class SandBlock extends Block {
