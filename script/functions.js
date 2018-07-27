@@ -6,7 +6,7 @@ function drawBackground(x, y) {
             image(backgroundImg, x + i * width, y, width, height)
     }
     fill(...seaColor);
-    drawSea();
+    drawSea(); 
     translate(x, y);
     player.animate()
     drawBlocks();

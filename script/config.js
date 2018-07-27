@@ -3,7 +3,7 @@ var canvasHeight = 500;
 
 var x = 0;
 var y = 0;
-
+ 
 var gameStarted = false;
 var gravity = 0.5;
 

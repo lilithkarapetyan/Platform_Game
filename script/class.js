@@ -3,7 +3,7 @@ class Parent {
         this.x = x;
         this.y = y;
         this.w = w;
-        this.h = h;
+        this.h = h; 
         this.img = img;
     }
 }
@@ -246,13 +246,9 @@ class Player extends Parent {
     }
 
     edit() {
-        if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !blockRangeEditing && mouseX > this.x + x && mouseX < this.x + x + this.w && mouseY > this.y + y && mouseY < this.y + y + this.h && mouseIsPressed) {
+        if (playerEditing) {
             this.x = mouseX - this.w / 2 - x;
-            this.y = mouseY - this.h / 2 - y;
-            playerEditing = true;
-        }
-        else {
-            playerEditing = false;
+            this.y = mouseY - this.h / 2 - y
         }
     }
 

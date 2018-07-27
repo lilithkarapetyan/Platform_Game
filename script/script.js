@@ -79,6 +79,9 @@ function mousePressed() {
             if (!gameStarted) {
                 editedBlocksID = editBlocks();
                 editedCoinsID = editCoins();
+                if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !blockRangeEditing && mouseX > this.x + x && mouseX < this.x + x + this.w && mouseY > this.y + y && mouseY < this.y + y + this.h && mouseIsPressed) {
+                    playerEditing = true;
+                }
             }
         }
     }
@@ -95,4 +98,5 @@ function keyReleased() {
     if (keyCode == UP_ARROW) {
         player.endJump();
     }
+    playerEditing = false;
 }
