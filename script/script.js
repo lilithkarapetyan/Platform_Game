@@ -1,5 +1,3 @@
-//var socket  = io.connect('http://localhost');
-
 function preload() {
     stoneImg = loadImage(stoneImgURL);
     sandImg = loadImage(sandImgURL);
@@ -66,6 +64,7 @@ function mouseReleased() {
     if (editedCoinsID >= 0 && editedCoinsID != undefined) {
         editedCoinsID = undefined;
     }
+    playerEditing = false;
     blockRangeEditing = false;
 }
 
@@ -98,5 +97,4 @@ function keyReleased() {
     if (keyCode == UP_ARROW) {
         player.endJump();
     }
-    playerEditing = false;
 }
