@@ -115,44 +115,29 @@ class Player extends Parent {
                 ((block.y + block.h / 2) - (that.y + that.h / 2)) >= that.h / 2
                 && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2 + that.speedX;
         });
-
+        //console.log(bottomColls.length)
         bottomColls.forEach(function (block) { arrayY.push(block.y) });
-        
+
         var index = arrayY.indexOf(Math.min(...arrayY))
         var bottom = bottomColls[index];
-        
+
         var rightColls = blocks.filter(function (block) {
+            var b = bottom ? !(block.x == bottom.x && block.y == bottom.y) : true;
             return ((block.x + block.w / 2) - (that.x + that.w / 2) <= that.w / 2 + block.w / 2) &&
                 ((block.x + block.w / 2) - (that.x + that.w / 2) >= that.w / 2)
-                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY;
+                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY && b;
         });
 
         var leftColls = blocks.filter(function (block) {
+            var b = bottom ? !(block.x == bottom.x && block.y == bottom.y) : true;
             return ((that.x + that.w / 2) - (block.x + block.w / 2) <= that.w / 2 + block.w / 2) &&
                 ((that.x + that.w / 2) - (block.x + block.w / 2)) >= that.w / 2
-                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY;
+                && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY && b;
         });
-        
-        console.log(leftColls);
-        
-        for( var i =0 ; i < rightColls.length; i++){
-            var block  = rightColls[i]
-            if(bottom && block.x == bottom.x && block.y == bottom.y){
-                rightColls.splice(rightColls.indexOf((block), 1));
-                i--;
-            }
-        }
-        for( var i =0 ; i < leftColls.length; i++){
-            var block  = leftColls[i]
-            if(bottom && block.x == bottom.x && block.y == bottom.y){
-                leftColls.splice(rightColls.indexOf((block), 1));
-                i--;
-            }
-        }
-        console.log(leftColls.length)
+
         var right = rightColls[0];
         var left = leftColls[0];
-        console.log(left)
+
         var up = blocks.find(function (block) {
             return ((that.y + that.h / 2) - (block.y + block.h / 2) <= that.h / 2 + block.h / 2) &&
                 ((that.y + that.h / 2) - (block.y + block.h / 2)) >= that.h / 2
@@ -179,45 +164,18 @@ class Player extends Parent {
         else
             this.collision.up = false;
         if (right) {
-            if (bottom) {
-                if (right.x != bottom.x && right.y != bottom.y) {
-                    this.collision.right = true;
-                    if (!this.collision.left && right.type == "Horizontal") {
-                        this.x = right.x - this.w
-                    }
-
-                }
-                else {
-                    this.collision.right = false;
-                }
-            } else if (!bottom) {
-                this.collision.right = true;
-                if (!this.collision.left && right.type == "Horizontal") {
-                    this.x = right.x - this.w
-                }
+            this.collision.right = true;
+            if (!this.collision.left && right.type == "Horizontal") {
+                this.x = right.x - this.w
             }
         }
         else
             this.collision.right = false;
         if (left) {
-            if (bottom) {
-                if (left.x != bottom.x && left.y != bottom.y) {
-                    this.collision.left = true;
-                    if (!this.collision.right) {
-
-                        this.x = left.x + left.w;
-                    }
-                }
-                else {
-                    this.collision.left = false;
-                }
-            } else if (!bottom) {
-                this.collision.left = true;
-                if (!this.collision.right && left.type == "Horizontal") {
-                    this.x = left.x + left.w;
-                }
+            this.collision.left = true;
+            if (!this.collision.right && left.type == "Horizontal") {
+                this.x = left.x + left.w;
             }
-
         }
         else {
             this.collision.left = false;
@@ -317,12 +275,12 @@ class HorizontalBlock extends Block {
     edit() {
         if (blockRangeEditing) {
             if (blockRangeEditing.x == this.x && blockRangeEditing.y == this.y) {
-                if(this.editor.x > this.x + this.w/2){
+                if (this.editor.x > this.x + this.w / 2) {
                     this.editor.x = mouseX - this.editor.w / 2 - x;
                     this.editRange = this.editor.x + this.editor.w / 2 - (this.x + this.w / 2);
                 }
-                else{
-                    this.editor.x = this.x + this.w/2;
+                else {
+                    this.editor.x = this.x + this.w / 2;
                 }
             }
         }
@@ -352,12 +310,12 @@ class VerticalBlock extends Block {
     edit() {
         if (blockRangeEditing) {
             if (blockRangeEditing.x == this.x && blockRangeEditing.y == this.y) {
-                if(this.editor.y > this.y + this.h/2){
+                if (this.editor.y > this.y + this.h / 2) {
                     this.editor.y = mouseY - this.editor.h / 2 + y;
                     this.editRange = this.editor.y + this.editor.h / 2 - (this.y + this.h / 2);
                 }
-                else{
-                    this.editor.y = this.y + this.h/2
+                else {
+                    this.editor.y = this.y + this.h / 2
                 }
             }
         }
