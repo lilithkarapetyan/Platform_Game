@@ -85,7 +85,6 @@ function mousePressed() {
                 if((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !playerEditing){
                     blockRangeEditing = blocks.find(function(b){
                         if(b.editor){
-                            //console.log(b)
                             return mouseX > b.editor.x + x && mouseX < b.editor.x + b.editor.w + x && mouseY > b.editor.y + y && mouseY < b.editor.y + y + b.editor.h && mouseX - x - b.editor.w / 2 >= b.x + b.w
                         }
                     });

@@ -29,8 +29,8 @@ var playerOpacity = 50;
 var player;
 var playerStartingX = 100;
 var playerStartingY = 200;
-var playerWidth = 40;
-var playerHeight = 94;
+var playerWidth = 20;
+var playerHeight = 90;
 var playerWalkSprite = { w: 70, h: 94 }
 var playerWalkFrames = 11;
 var playerSprite = "images/p2_spritesheet.png"

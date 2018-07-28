@@ -29,11 +29,18 @@ class Player extends Parent {
     }
 
     animate() {
+        fill("red")
+        rect(this.x, this.y, this.w, this.h);
         if (!gameStarted) {
-            image(playerSprite, this.x - 15, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
+            image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
         }
         else {
-            image(playerSprite, this.x - 15, this.y, playerWalkSprite.w, playerWalkSprite.h, window['playerWalk' + this.walkCounter].x, window['playerWalk' + this.walkCounter].y, playerWalkSprite.w, playerWalkSprite.h);
+            if (keyIsDown(RIGHT_ARROW) || keyIsDown(LEFT_ARROW) || keyIsDown(UP_ARROW))
+                image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, window['playerWalk' + this.walkCounter].x, window['playerWalk' + this.walkCounter].y, playerWalkSprite.w, playerWalkSprite.h);
+            else {
+                image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
+                this.walkCounter = 0;
+            }
         }
     }
 
