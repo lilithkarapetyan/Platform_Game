@@ -117,22 +117,42 @@ class Player extends Parent {
         });
 
         bottomColls.forEach(function (block) { arrayY.push(block.y) });
-
+        
         var index = arrayY.indexOf(Math.min(...arrayY))
         var bottom = bottomColls[index];
-
-        var right = blocks.find(function (block) {
+        
+        var rightColls = blocks.filter(function (block) {
             return ((block.x + block.w / 2) - (that.x + that.w / 2) <= that.w / 2 + block.w / 2) &&
                 ((block.x + block.w / 2) - (that.x + that.w / 2) >= that.w / 2)
                 && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY;
         });
 
-        var left = blocks.find(function (block) {
+        var leftColls = blocks.filter(function (block) {
             return ((that.x + that.w / 2) - (block.x + block.w / 2) <= that.w / 2 + block.w / 2) &&
                 ((that.x + that.w / 2) - (block.x + block.w / 2)) >= that.w / 2
                 && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY;
         });
-
+        
+        console.log(leftColls);
+        
+        for( var i =0 ; i < rightColls.length; i++){
+            var block  = rightColls[i]
+            if(bottom && block.x == bottom.x && block.y == bottom.y){
+                rightColls.splice(rightColls.indexOf((block), 1));
+                i--;
+            }
+        }
+        for( var i =0 ; i < leftColls.length; i++){
+            var block  = leftColls[i]
+            if(bottom && block.x == bottom.x && block.y == bottom.y){
+                leftColls.splice(rightColls.indexOf((block), 1));
+                i--;
+            }
+        }
+        console.log(leftColls.length)
+        var right = rightColls[0];
+        var left = leftColls[0];
+        console.log(left)
         var up = blocks.find(function (block) {
             return ((that.y + that.h / 2) - (block.y + block.h / 2) <= that.h / 2 + block.h / 2) &&
                 ((that.y + that.h / 2) - (block.y + block.h / 2)) >= that.h / 2
@@ -161,7 +181,6 @@ class Player extends Parent {
         if (right) {
             if (bottom) {
                 if (right.x != bottom.x && right.y != bottom.y) {
-                    //console.log(right, bottom)
                     this.collision.right = true;
                     if (!this.collision.left && right.type == "Horizontal") {
                         this.x = right.x - this.w
@@ -297,7 +316,6 @@ class HorizontalBlock extends Block {
 
     edit() {
         if (blockRangeEditing) {
-            //console.log(blockRangeEditing)
             if (blockRangeEditing.x == this.x && blockRangeEditing.y == this.y) {
                 if(this.editor.x > this.x + this.w/2){
                     this.editor.x = mouseX - this.editor.w / 2 - x;
