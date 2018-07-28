@@ -6,7 +6,7 @@ function drawBackground(x, y) {
             image(backgroundImg, x + i * width, y, width, height)
     }
     fill(...seaColor);
-    drawSea(); 
+    drawSea();
     translate(x, y);
     player.animate()
     drawBlocks();
@@ -21,9 +21,21 @@ function drawToolBar() {
         if (tools[i].f == "Save" && !player.won) {
             fill(...tools[i].color, 50);
         }
-
         rect(tools[i].x, 0, width / tools.length, toolBarHeight, toolBarRectCorners);
-        textSize(toolBarTextSize)
+        if (tools[i].f == "Stone")
+            var img = stoneImg;
+        else if (tools[i].f == "Horizontal" || tools[i].f == "Vertical" || tools[i].f == "Death")
+            var img = metalImg;
+        else if (tools[i].f == "Sand")
+            var img = sandImg;
+        else{
+            img = undefined;
+        }
+
+        if (img) {
+            image(img, tools[i].x + 10, tools[i].y + 10, width / tools.length - 20, toolBarHeight - 20)
+        }
+        textSize(toolBarTextSize);
         textAlign(CENTER, CENTER);
         fill(0)
         text(tools[i].f, tools[i].x, 0, width / tools.length, toolBarHeight)
@@ -66,7 +78,7 @@ function checkMouseMovement() {
 function toolBarFunction() {
     var tool = Math.floor(mouseX / tools[0].size);
     if (tools[tool].f == 'Play') {
-        
+
         start();
         if (x > width - backgroundSize && playerStartingX - player.x <= 0)
             x = playerStartingX - player.x
@@ -114,7 +126,7 @@ function start() {
         player.walkCounter = 0
         console.log(player)
     }
-    else{
+    else {
         console.log(player, "start")
         gameStarted = true;
         data = fix();
@@ -249,9 +261,9 @@ function saveCoords() {
     var json = JSON.stringify(data)
     var encoded = encodeURI(json)
 
-    var t = location.href + "?data="+encoded;
+    var t = location.href + "?data=" + encoded;
     console.log(t);
-    
+
     location.href = t;
     //console.log(encoded);
     //var decoded = decodeURI(encoded)

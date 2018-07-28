@@ -29,8 +29,8 @@ class Player extends Parent {
     }
 
     animate() {
-        fill("red")
-        rect(this.x, this.y, this.w, this.h);
+        // fill("red")
+        // rect(this.x, this.y, this.w, this.h);
         if (!gameStarted) {
             image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
         }
