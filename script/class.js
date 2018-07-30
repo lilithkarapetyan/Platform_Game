@@ -79,7 +79,8 @@ class Player extends Parent {
             if (this.x + this.w <= backgroundSize) {
                 this.x += this.speedX
                 if (this.x + x + this.w / 2 >= canvasWidth / 2) {
-                    x -= this.speedX
+                    ///if (x < canvasWidth - backgroundSize)
+                        x -= this.speedX
                 }
 
             }
@@ -129,7 +130,7 @@ class Player extends Parent {
         var bottom = bottomColls[index];
 
         var rightColls = blocks.filter(function (block) {
-            var b = bottom ? !(block.x == bottom.x && block.y == bottom.y) : true;
+            var b = bottom ? !(block.x == bottom.x && block.y == bottom.y && block.w == bottom.w && block.h == bottom.h) : true;
             return ((block.x + block.w / 2) - (that.x + that.w / 2) <= that.w / 2 + block.w / 2) &&
                 ((block.x + block.w / 2) - (that.x + that.w / 2) >= that.w / 2)
                 && Math.abs((block.y + block.h / 2) - (that.y + that.h / 2)) < that.h / 2 + block.h / 2 - that.speedY && b;
@@ -340,7 +341,7 @@ class SandBlock extends Block {
     break() {
         if (!this.startedBreaking) {
             this.startedBreaking = true;
-            sandBreaker(this)
+            sandBreaker(this);
         }
     }
 }
@@ -377,7 +378,7 @@ class DeathBlock extends Block {
 }
 
 class Coin extends Parent {
-    constructor(x, y, w, h, img, color) {
+    constructor(x, y, w, h, img, color = [0, 0, 0]) {
         super(x, y, w, h, img);
         this.color = color;
     }

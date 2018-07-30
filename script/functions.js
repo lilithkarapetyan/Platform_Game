@@ -1,6 +1,5 @@
 function drawBackground(x, y) {
-    if (!mouseIsPressed)
-        checkMouseMovement();
+    checkMouseMovement();
     for (var i = 0; i <= backgroundSize / width; i++) {
         if (x > -width)
             image(backgroundImg, x + i * width, y, width, height)
@@ -28,7 +27,7 @@ function drawToolBar() {
             var img = metalImg;
         else if (tools[i].f == "Sand")
             var img = sandImg;
-        else{
+        else {
             img = undefined;
         }
 
@@ -73,17 +72,18 @@ function checkMouseMovement() {
             x += 2;
         }
     }
+    //console.log(x)
 }
 
 function toolBarFunction() {
     var tool = Math.floor(mouseX / tools[0].size);
     if (tools[tool].f == 'Play') {
-
         start();
-        if (x > width - backgroundSize && playerStartingX - player.x <= 0)
-            x = playerStartingX - player.x
-    } else if (tools[tool].f == "Save" && player.won) {
-        saveCoords();
+    }
+    else if (tools[tool].f == "Save" && player.won) {
+        //data = fix();
+        saveCoords(data);
+        //construct(data);
     }
     if (!gameStarted) {
         if (tools[tool].f == 'Stone') {
@@ -114,20 +114,10 @@ function toolBarFunction() {
 
 function start() {
     if (gameStarted) {
-
+        construct(data);
         gameStarted = false;
-        player.x = data.player.x;
-        player.y = data.player.y;
-
-        player.won = false;
-        player.dead = false;
-        player.speedY = playerVY;;
-        player.eatenCoins = 0;
-        player.walkCounter = 0
-        console.log(player)
     }
     else {
-        console.log(player, "start")
         gameStarted = true;
         data = fix();
     }
@@ -220,15 +210,12 @@ function sandBreaker(obj) {
 
 }
 
-function restart() {
-    if (mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing) {
-        blocks = [];
-        player.x = playerStartingX;
-        player.y = playerStartingY;
-        coins = [];
-        player.speedY = 0
-
-    }
+function deleteEverything() {
+    blocks = [];
+    player.x = playerStartingX;
+    player.y = playerStartingY;
+    coins = [];
+    player.speedY = 0;
 }
 
 function fix() {
@@ -252,21 +239,60 @@ function fix() {
         }
     }
 
-    data.iceCream = { x: cup.x, y: cup.y }
-
+    data.cup = { x: cup.x, y: cup.y };
+    data.camera = {x: x, y: y};
+    console.log(data.camera)
     return data
 }
 
-function saveCoords() {
-    var json = JSON.stringify(data)
-    var encoded = encodeURI(json)
+function saveCoords(data) {
+    var json = JSON.stringify(data);
+    let url = location.href
+    if (url.indexOf("?") >= 0) {
+        url = url.slice(0, url.indexOf("?"));
+    }
+    location.href = url + "?data=" + encodeURI(json);
 
-    var t = location.href + "?data=" + encoded;
-    console.log(t);
-
-    location.href = t;
     //console.log(encoded);
     //var decoded = decodeURI(encoded)
     //console.log(decoded)
     ///console.log(JSON.parse(decoded))
+}
+
+
+function construct(data) {
+    blocks = [];
+    coins = [];
+    data.blocks.forEach(function (b) {
+        if (b.type == 'Stone') {
+            //                    _____block.x____,_______________block.y_____________,__block.w__,__block.h__,block.type, block.color,__block.id__
+            blocks.push(new Block(b.x, b.y, stoneWidth, stoneHeight, stoneImg, 'Stone', stoneColor, blocks.length));
+        }
+        else if (b.type == 'Horizontal') {
+            //                                                                                                                                                                  block.dirX             block.editRange
+            blocks.push(new HorizontalBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, b.editRange));
+        }
+        else if (b.type == 'Vertical') {
+            //                                                                                                                                                              block.dirY           block.editRange
+            blocks.push(new VerticalBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, b.editRange));
+        }
+        else if (b.type == 'Sand') {
+
+            blocks.push(new SandBlock(b.x, b.y, sandWidth, sandHeight, sandImg, 'Sand', sandColor, blocks.length));
+        }
+        else if (b.type == 'Death') {
+            //                                                                                                                                                        block.slicer.dirY
+            blocks.push(new DeathBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, 'Death', metalColor, blocks.length, deathBlockSlicerV));
+        }
+    });
+
+    data.coins.forEach(function (c) {
+        coins.push(new Coin(c.x, c.y, coinSize, coinSize, undefined, coinColor))
+    });
+
+    player = new Player(data.player.x, data.player.y, playerWidth, playerHeight, playerSprite, playerVX, playerVY, playerA, playerColor);
+    cup = new Cup(data.cup.x, data.cup.y, cupWidth, cupHeight, cupImg, cupColor);
+    x = data.camera.x;
+    y = data.camera.y;
+
 }

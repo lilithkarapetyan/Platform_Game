@@ -114,3 +114,4 @@ var coinColor = [255, 100, 0];
 var coinSize = 20;
 
 var data;
+var built = false;

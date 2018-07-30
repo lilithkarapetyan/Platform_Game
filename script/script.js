@@ -8,7 +8,7 @@ function preload() {
     slicerImg = loadImage(slicerImg);
     backgroundImg = loadImage(backgroundImg);
 }
- 
+
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
     background(...backgroundColor);
@@ -42,6 +42,19 @@ function draw() {
     else {
         player.prepare();
         cup.edit();
+        if (!built) {
+            let url = location.href;
+            let startIndex = url.indexOf("=") + 1;
+            if (startIndex > 0) {
+                let encoded = url.slice(startIndex);
+                var decoded = decodeURI(encoded);
+                data = JSON.parse(decoded);
+                if (data) {
+                    construct(data)
+                    built = true;
+                }
+            }
+        }
     }
     if (mouseIsPressed) {
         if (editedBlocksID >= 0) {
@@ -71,7 +84,9 @@ function mouseReleased() {
 
 function mousePressed() {
     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-        restart();
+        if (mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing) {
+            deleteEverything();
+        }
         if (mouseY <= toolBarHeight) {
             toolBarFunction();
         }
@@ -82,9 +97,9 @@ function mousePressed() {
                 if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !blockRangeEditing && mouseX > player.x + x && mouseX < player.x + x + player.w && mouseY > player.y + y && mouseY < player.y + y + player.h) {
                     playerEditing = true;
                 }
-                if((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !playerEditing){
-                    blockRangeEditing = blocks.find(function(b){
-                        if(b.editor){
+                if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !playerEditing) {
+                    blockRangeEditing = blocks.find(function (b) {
+                        if (b.editor) {
                             return mouseX > b.editor.x + x && mouseX < b.editor.x + b.editor.w + x && mouseY > b.editor.y + y && mouseY < b.editor.y + y + b.editor.h && mouseX - x - b.editor.w / 2 >= b.x + b.w
                         }
                     });
@@ -92,7 +107,7 @@ function mousePressed() {
 
                 if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing && !playerEditing &&
                     mouseX > cup.x + x && mouseX < cup.x + x + cup.w && mouseY > cup.y + y && mouseY < cup.y + y + cup.h) {
-                      cupEditing = true;              
+                    cupEditing = true;
                 }
             }
         }
