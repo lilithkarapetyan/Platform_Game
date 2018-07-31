@@ -43,11 +43,13 @@ function draw() {
     else {
         player.prepare();
         cup.edit();
+        
         if (!built) {
             let url = location.href;
             let startIndex = url.indexOf("=") + 1;
             if (startIndex > 0) {
-                let encoded = url.slice(startIndex);
+                let base64 = url.slice(startIndex);
+                let encoded = window.atob(base64)
                 var decoded = decodeURI(encoded);
                 data = JSON.parse(decoded);
                 if (data) {

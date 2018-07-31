@@ -290,7 +290,11 @@ function saveCoords(data) {
     if (url.indexOf("?") >= 0) {
         url = url.slice(0, url.indexOf("?"));
     }
-    location.href = url + "?data=" + encodeURI(json);
+    /*var base36 = parseInt(encodeURI(json), 36);
+    alert(base36)*/
+    var base64 = window.btoa(encodeURI(json))
+    //alert(window.atob(base64))
+    location.href = url + "?data=" + base64;
 
     //console.log(encoded);
     //var decoded = decodeURI(encoded)
