@@ -20,24 +20,59 @@ function drawToolBar() {
         if (tools[i].f == "Save" && !player.won) {
             fill(...tools[i].color, 50);
         }
-        rect(tools[i].x, 0, width / tools.length, toolBarHeight, toolBarRectCorners);
-        if (tools[i].f == "Stone")
+        rect(tools[i].x, 0, tools[i].w, tools[i].h, toolBarRectCorners);
+        if (tools[i].f == "Stone") {
             var img = stoneImg;
-        else if (tools[i].f == "Horizontal" || tools[i].f == "Vertical" || tools[i].f == "Death")
+            var imageWidth = stoneWidth;
+            var imageHeight = stoneHeight;
+        }
+        else if (tools[i].f == "Horizontal" || tools[i].f == "Vertical" || tools[i].f == "Death") {
             var img = metalImg;
-        else if (tools[i].f == "Sand")
+            var imageWidth = metalBlocksWidth;
+            var imageHeight = metalBlocksHeight;
+        }
+        else if (tools[i].f == "Sand") {
             var img = sandImg;
+            var imageWidth = sandWidth;
+            var imageHeight = sandHeight;
+        }
+        else if (tools[i].f == "Coin") {
+            var img = coinImg;
+            var imageWidth = coinSize;
+            var imageHeight = coinSize;
+        }
         else {
             img = undefined;
         }
 
         if (img) {
-            image(img, tools[i].x + 10, tools[i].y + 10, width / tools.length - 20, toolBarHeight - 20)
+            var scale = imageWidth > imageHeight ? tools[i].w / imageWidth : tools[i].h / imageHeight
+            if (imageWidth > imageHeight) {
+                var horGap = toolBarImagesGap;
+                var vertGap = 0;
+            }
+            else if (imageWidth == imageHeight) {
+                var horGap = toolBarImagesGap;
+                var vertGap = toolBarImagesGap;
+            }
+            else {
+                var horGap = 0;
+                var vertGap = toolBarImagesGap;
+            }
+            imageMode(CENTER)
+            image(img, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, imageWidth * scale - 2 * horGap, imageHeight * scale - 2 * vertGap);
+            imageMode(CORNER)
         }
-        textSize(toolBarTextSize);
-        textAlign(CENTER, CENTER);
-        fill(0)
-        text(tools[i].f, tools[i].x, 0, width / tools.length, toolBarHeight)
+        else {
+            textSize(toolBarTextSize);
+            textAlign(CENTER, CENTER);
+            fill(0)
+            if (tools[i].f == "Play") {
+                text(gameStarted ? "Stop" : tools[i].f, tools[i].x, 0, width / tools.length, toolBarHeight)
+            }
+            else
+                text(tools[i].f, tools[i].x, 0, width / tools.length, toolBarHeight)
+        }
     }
     strokeWeight(deleteButton.strokeWeight);
     stroke(...deleteButton.color)
@@ -72,11 +107,11 @@ function checkMouseMovement() {
             x += 2;
         }
     }
-    //console.log(x)
+
 }
 
 function toolBarFunction() {
-    var tool = Math.floor(mouseX / tools[0].size);
+    var tool = Math.floor(mouseX / tools[0].w);
     if (tools[tool].f == 'Play') {
         start();
     }
@@ -201,11 +236,15 @@ function updateBlocksCoordinates(i) {
 function sandBreaker(obj) {
     var breakInt = setInterval(function () {
         var i = blocks.indexOf(obj)
-        blocks[i].strength--;
-        if (blocks[i].strength == 0) {
-            blocks.splice(i, 1)
-            clearInterval(breakInt)
+        if (i >= 0) {
+            blocks[i].strength--;
+            if (blocks[i].strength == 0) {
+                blocks.splice(i, 1)
+                clearInterval(breakInt)
+            }
         }
+        else
+            clearInterval(breakInt);
     }, 1000)
 
 }
@@ -240,8 +279,8 @@ function fix() {
     }
 
     data.cup = { x: cup.x, y: cup.y };
-    data.camera = {x: x, y: y};
-    console.log(data.camera)
+    data.camera = { x: x, y: y };
+
     return data
 }
 

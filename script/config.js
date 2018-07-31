@@ -87,6 +87,7 @@ var metalBlocksWidth = 100;
 var metalBlocksHeight = 25;
 var sandWidth = 50;
 var sandHeight = 50;
+var toolBarImagesGap = 5;
 
 var toolBarRectCorners = 5;
 var toolBarTextSize = 20;

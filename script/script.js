@@ -24,8 +24,9 @@ function setup() {
     for (var i = 0; i < toolsFunctions.length; i++) {
         tools.push({
             x: i * width / toolsFunctions.length,
-            size: width / toolsFunctions.length,
             y: 0,
+            w: width / toolsFunctions.length,
+            h: toolBarHeight,
             id: i,
             color: toolBarColor,
             f: toolsFunctions[i]
@@ -100,7 +101,7 @@ function mousePressed() {
                 if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !playerEditing) {
                     blockRangeEditing = blocks.find(function (b) {
                         if (b.editor) {
-                            return mouseX > b.editor.x + x && mouseX < b.editor.x + b.editor.w + x && mouseY > b.editor.y + y && mouseY < b.editor.y + y + b.editor.h && mouseX - x - b.editor.w / 2 >= b.x + b.w
+                            return mouseX > b.editor.x + x && mouseX < b.editor.x + b.editor.w + x && mouseY > b.editor.y + y && mouseY < b.editor.y + y + b.editor.h 
                         }
                     });
                 }
