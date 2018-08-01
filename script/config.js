@@ -116,3 +116,5 @@ var coinSize = 20;
 
 var data;
 var built = false;
+var base64;
+

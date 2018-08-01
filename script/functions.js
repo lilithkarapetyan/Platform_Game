@@ -292,8 +292,7 @@ function saveCoords(data) {
     }
     /*var base36 = parseInt(encodeURI(json), 36);
     alert(base36)*/
-    var base64 = window.btoa(encodeURI(json))
-    //  alert(window.atob(base64))
+    base64 = window.btoa(encodeURI(json))
     location.href = url + "?data=" + base64;
 
     //console.log(encoded);

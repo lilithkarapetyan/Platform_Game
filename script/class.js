@@ -30,8 +30,6 @@ class Player extends Parent {
     }
 
     animate() {
-        // fill("red")
-        // rect(this.x, this.y, this.w, this.h);
         if (!gameStarted) {
             image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
         }
@@ -88,7 +86,9 @@ class Player extends Parent {
 
 
         }
-        if (this.speedY < 6)
+
+
+        if (this.speedY < 6 )
             this.speedY += gravity;
 
         if (this.collision.down) {
@@ -99,7 +99,12 @@ class Player extends Parent {
                 this.speedY = 0;
             }
         }
-        this.y += this.speedY;
+        if(!this.collision.up || this.speedY >= 0){
+            this.y += this.speedY;
+        }
+        else{
+            this.speedY = 0
+        }
 
         if (this.y >= seaStartingY) {
             this.die();
@@ -107,7 +112,7 @@ class Player extends Parent {
     }
 
     startJump() {
-        if (this.collision.down) {
+        if (this.collision.down ) {
             this.y -= 2;
             this.speedY = -12.0;
             this.collision.down = false;
@@ -154,9 +159,9 @@ class Player extends Parent {
         var up = blocks.find(function (block) {
             var l = left ? !(left.x == block.x && left.y == block.y && left.w == block.w && left.h == block.h) : true;
             var r = right ? !(right.x == block.x && right.y == block.y && right.w == block.w && right.h == block.h) : true;
-            return ((that.y + that.h / 2) - (block.y + block.h / 2) <= that.h / 2 + block.h / 2 + that.speedY) &&
-                ((that.y + that.h / 2) - (block.y + block.h / 2)) >= that.h / 2 + block.h / 2 - that.speedY
-                && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2 - 2 * that.speedX //&& r && l;
+            return ((that.y + that.h / 2) - (block.y + block.h / 2) <= that.h / 2 + block.h / 2) &&
+                ((that.y + that.h / 2) - (block.y + block.h / 2)) >= that.h / 2 + block.h / 2 + that.speedY
+                && Math.abs((block.x + block.w / 2) - (that.x + that.w / 2)) < that.w / 2 + block.w / 2 - 2 * that.speedX && r && l;
         });
 
         if (bottom) {
@@ -174,8 +179,8 @@ class Player extends Parent {
             this.collision.down = false;
         if (up) {
             this.collision.up = true;
-            if (!bottom)
-                this.y = up.y + up.h;
+            if (this.collision.down)
+                this.y = up.y + up.h + 1;
         }
         else
             this.collision.up = false;
@@ -247,10 +252,17 @@ class Player extends Parent {
 
     win() {
         this.won = true;
+        /*
+        https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal2
+        */
     }
 
     die() {
         this.dead = true;
+        setTimeout(function(){
+            gameStarted = false;
+            construct(data)
+        },1000)
     }
 }
 
