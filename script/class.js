@@ -248,7 +248,7 @@ class Player extends Parent {
     win() {
         this.won = true;
         alert("You won, please save your level");
-        //gameStarted = false;
+        gameStarted = false;
         //construct(data)
         /*
         https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal2
