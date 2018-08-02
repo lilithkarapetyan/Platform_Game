@@ -1,17 +1,21 @@
 function preload() {
-    stoneImg = loadImage(stoneImgURL);
-    sandImg = loadImage(sandImgURL);
-    metalImg = loadImage(metalImgURL);
+    stoneImg = loadImage(stoneImg);
+    sandImg = loadImage(sandImg);
+    metalImg = loadImage(metalImg);
     playerSprite = loadImage(playerSprite);
     coinImg = loadImage(coinImg);
     cupImg = loadImage(cupImg);
     slicerImg = loadImage(slicerImg);
     backgroundImg = loadImage(backgroundImg);
+    hArrowImg = loadImage(hArrowImg);
+    vArrowImg = loadImage(vArrowImg);
+
+    player = new Player(playerStartingX, playerStartingY, playerWidth, playerHeight, playerSprite, playerVX, playerVY, playerA);
+    cup = new Cup(cupStartingX, cupStartingY, cupWidth, cupHeight, cupImg);
 }
 
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
-    background(...backgroundColor);
     noStroke();
     for (var i = 0; i <= width / waveSize; i++) {
         seaArr.push({
@@ -27,7 +31,6 @@ function setup() {
             y: 0,
             w: width / toolsFunctions.length,
             h: toolBarHeight,
-            id: i,
             color: toolBarColor,
             f: toolsFunctions[i]
         })
@@ -63,16 +66,16 @@ function draw() {
                 }
             }
         }
-    }
-    if (mouseIsPressed) {
-        if (editedBlocksID >= 0) {
-            blocks[editedBlocksID].x = mouseX - x - blocks[editedBlocksID].w / 2;
-            blocks[editedBlocksID].y = mouseY - y - blocks[editedBlocksID].h / 2;
-            updateBlocksCoordinates(editedBlocksID)
-        }
-        if (editedCoinsID >= 0) {
-            coins[editedCoinsID].x = mouseX - x - coins[editedCoinsID].w / 2;
-            coins[editedCoinsID].y = mouseY - y - coins[editedCoinsID].h / 2;
+        if (mouseIsPressed) {
+            if (editedBlocksID >= 0) {
+                blocks[editedBlocksID].x = mouseX - x - blocks[editedBlocksID].w / 2;
+                blocks[editedBlocksID].y = mouseY - y - blocks[editedBlocksID].h / 2;
+                updateBlocksCoordinates(editedBlocksID)
+            }
+            if (editedCoinsID >= 0) {
+                coins[editedCoinsID].x = mouseX - x - coins[editedCoinsID].w / 2;
+                coins[editedCoinsID].y = mouseY - y - coins[editedCoinsID].h / 2;
+            }
         }
     }
 }
@@ -92,15 +95,11 @@ function mouseReleased() {
 
 function mousePressed() {
     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-        if (mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing) {
-            if (!gameStarted)
+        if (!gameStarted) {
+            if (mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing) {
                 deleteEverything();
-        }
-        if (mouseY <= toolBarHeight) {
-            toolBarFunction();
-        }
-        else {
-            if (!gameStarted) {
+            }
+            else {
                 editedBlocksID = editBlocks();
                 editedCoinsID = editCoins();
                 if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !blockRangeEditing && mouseX > player.x + x && mouseX < player.x + x + player.w && mouseY > player.y + y && mouseY < player.y + y + player.h) {
@@ -119,6 +118,10 @@ function mousePressed() {
                     cupEditing = true;
                 }
             }
+
+        }
+        if (mouseY <= toolBarHeight) {
+            toolBarFunction();
         }
     }
 }

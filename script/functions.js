@@ -61,7 +61,14 @@ function drawToolBar() {
             }
             imageMode(CENTER)
             image(img, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, imageWidth * scale - 2 * horGap, imageHeight * scale - 2 * vertGap);
-            imageMode(CORNER)
+            if (tools[i].f == "Horizontal")
+                image(hArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w*scale/1.5  - 2 * horGap, tools[i].h*scale/1.5  - 2 * vertGap);
+            else if (tools[i].f == "Vertical")
+                image(vArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w*scale/1.5  - 2 * horGap, tools[i].h*scale/1.5 - 2 * vertGap);
+            else if (tools[i].f == "Death") { 
+                image(slicerImg,tools[i].x + tools[i].w / 2, tools[i].y + (imageHeight * scale)/2 , imageWidth * scale - 2 * horGap, (imageHeight * scale)/2 - 2 * vertGap)
+            }
+            imageMode(CORNER);
         }
         else {
             textSize(toolBarTextSize);
@@ -73,6 +80,7 @@ function drawToolBar() {
             else
                 text(tools[i].f, tools[i].x, 0, width / tools.length, toolBarHeight)
         }
+
     }
     strokeWeight(deleteButton.strokeWeight);
     stroke(...deleteButton.color)
@@ -112,38 +120,30 @@ function checkMouseMovement() {
 
 function toolBarFunction() {
     var tool = Math.floor(mouseX / tools[0].w);
-    if (tools[tool].f == 'Play') {
+    if (tools[tool].f == 'Play')
         start();
-    }
-    else if (tools[tool].f == "Save" && player.won) {
-        //data = fix();
+    else if (tools[tool].f == "Save" && player.won)
         saveCoords(data);
-        //construct(data);
-    }
-    if (!gameStarted) {
-        if (tools[tool].f == 'Stone') {
-            //                    _____block.x____,_______________block.y_____________,__block.w__,__block.h__,block.type, block.color,__block.id__
-            blocks.push(new Block(tools[tool].x - x, tools[tool].y - y + toolBarHeight, stoneWidth, stoneHeight, stoneImg, 'Stone', stoneColor, blocks.length));
-        }
-        else if (tools[tool].f == 'Horizontal') {
-            //                                                                                                                                                                  block.dirX             block.editRange
-            blocks.push(new HorizontalBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, metalImg, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, horizontalBlocksRange));
-        }
-        else if (tools[tool].f == 'Vertical') {
-            //                                                                                                                                                              block.dirY           block.editRange
-            blocks.push(new VerticalBlock(tools[tool].x - x, tools[tool].y + toolBarHeight - y, metalBlocksWidth, metalBlocksHeight, metalImg, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, verticalBlocksRange));
-        }
-        else if (tools[tool].f == 'Sand') {
 
-            blocks.push(new SandBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, sandWidth, sandHeight, sandImg, 'Sand', sandColor, blocks.length));
-        }
-        else if (tools[tool].f == 'Death') {
-            //                                                                                                                                                        block.slicer.dirY
-            blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, metalImg, 'Death', metalColor, blocks.length, deathBlockSlicerV));
-        }
-        else if (tools[tool].f == 'Coin') {
-            coins.push(new Coin(tools[tool].x - x, tools[tool].y - y + toolBarHeight, coinSize, coinSize, undefined, coinColor));
-        }
+    if (!gameStarted) {
+        if (tools[tool].f == 'Stone')
+            blocks.push(new Block(tools[tool].x - x, tools[tool].y - y + toolBarHeight, stoneWidth, stoneHeight, stoneImg, 'Stone'));
+
+        else if (tools[tool].f == 'Horizontal')
+            blocks.push(new HorizontalBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, metalImg, editorColor, 'Horizontal', horizontalBlocksSpeed, horizontalBlocksRange));
+
+        else if (tools[tool].f == 'Vertical')
+            blocks.push(new VerticalBlock(tools[tool].x - x, tools[tool].y + toolBarHeight - y, metalBlocksWidth, metalBlocksHeight, metalImg, editorColor, 'Vertical', verticalBlocksSpeed, verticalBlocksRange));
+
+        else if (tools[tool].f == 'Sand')
+            blocks.push(new SandBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, sandWidth, sandHeight, sandImg, 'Sand'));
+
+        else if (tools[tool].f == 'Death')
+            blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, metalImg, slicerImg, 'Death', deathBlockSlicerV));
+
+        else if (tools[tool].f == 'Coin')
+            coins.push(new Coin(tools[tool].x - x, tools[tool].y - y + toolBarHeight, coinSize, coinSize, coinImg));
+
     }
 }
 
@@ -166,7 +166,7 @@ function drawBlocks() {
             }
             else {
                 block.edit();
-                fill(...block.color, 50);
+                fill(block.editor.color);
                 rect(block.editor.x, block.editor.y, block.editor.w, block.editor.h);
             }
         }
@@ -177,20 +177,17 @@ function drawBlocks() {
                 block.move();
                 block.kill();
             }
-            image(slicerImg, block.slicer.x, block.slicer.y - block.slicer.h, block.slicer.w, block.slicer.h * 2)
+            image(slicerImg, block.slicer.x, block.slicer.y, block.slicer.w, block.slicer.h)
         }
-        fill(...block.color)
+
         if (block.img) {
-            image(block.img, block.x, block.y, block.w, block.h, blocksRoundedCorners)
+            tint(255, block.type == "Sand" ? block.strength / sandBlockStartingStrength * 255 : 255);
+            image(block.img, block.x, block.y, block.w, block.h, blocksRoundedCorners);
+            tint(255, 255);
         }
         else
             rect(block.x, block.y, block.w, block.h, blocksRoundedCorners);
 
-        if (block.type == 'Sand') {
-            fill(255)
-            textAlign(CENTER, CENTER)
-            text(block.strength, block.x, block.y, block.w, block.h)
-        }
     }
     noStroke();
 
@@ -306,34 +303,32 @@ function construct(data) {
     blocks = [];
     coins = [];
     data.blocks.forEach(function (b) {
-        if (b.type == 'Stone') {
-            //                    _____block.x____,_______________block.y_____________,__block.w__,__block.h__,block.type, block.color,__block.id__
-            blocks.push(new Block(b.x, b.y, stoneWidth, stoneHeight, stoneImg, 'Stone', stoneColor, blocks.length));
-        }
-        else if (b.type == 'Horizontal') {
-            //                                                                                                                                                                  block.dirX             block.editRange
-            blocks.push(new HorizontalBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, 'Horizontal', metalColor, blocks.length, horizontalBlocksSpeed, b.editRange));
-        }
-        else if (b.type == 'Vertical') {
-            //                                                                                                                                                              block.dirY           block.editRange
-            blocks.push(new VerticalBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, 'Vertical', metalColor, blocks.length, verticalBlocksSpeed, b.editRange));
-        }
-        else if (b.type == 'Sand') {
+        if (b.type == 'Stone')
+            blocks.push(new Block(b.x, b.y, stoneWidth, stoneHeight, stoneImg, 'Stone'));
 
-            blocks.push(new SandBlock(b.x, b.y, sandWidth, sandHeight, sandImg, 'Sand', sandColor, blocks.length));
-        }
-        else if (b.type == 'Death') {
-            //                                                                                                                                                        block.slicer.dirY
-            blocks.push(new DeathBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, 'Death', metalColor, blocks.length, deathBlockSlicerV));
-        }
+        else if (b.type == 'Horizontal')
+            blocks.push(new HorizontalBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, editorColor, 'Horizontal', horizontalBlocksSpeed, b.editRange));
+
+        else if (b.type == 'Vertical')
+            blocks.push(new VerticalBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, editorColor, 'Vertical', verticalBlocksSpeed, b.editRange));
+
+        else if (b.type == 'Sand')
+            blocks.push(new SandBlock(b.x, b.y, sandWidth, sandHeight, sandImg, 'Sand'));
+
+        else if (b.type == 'Death')
+            blocks.push(new DeathBlock(b.x, b.y, metalBlocksWidth, metalBlocksHeight, metalImg, slicerImg, 'Death', deathBlockSlicerV));
+
+        else if (b.type == 'Coin')
+            coins.push(new Coin(b.x, b.y, coinSize, coinSizem, coinImg));
+
     });
 
     data.coins.forEach(function (c) {
-        coins.push(new Coin(c.x, c.y, coinSize, coinSize, undefined, coinColor))
+        coins.push(new Coin(c.x, c.y, coinSize, coinSize, coinImg))
     });
 
-    player = new Player(data.player.x, data.player.y, playerWidth, playerHeight, playerSprite, playerVX, playerVY, playerA, playerColor);
-    cup = new Cup(data.cup.x, data.cup.y, cupWidth, cupHeight, cupImg, cupColor);
+    player = new Player(data.player.x, data.player.y, playerWidth, playerHeight, playerSprite, playerVX, playerVY, playerA);
+    cup = new Cup(data.cup.x, data.cup.y, cupWidth, cupHeight, cupImg);
     x = data.camera.x;
     y = data.camera.y;
 

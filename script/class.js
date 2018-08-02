@@ -9,12 +9,11 @@ class Parent {
 }
 
 class Player extends Parent {
-    constructor(x, y, w, h, img, VX, VY, a, c) {
+    constructor(x, y, w, h, img, VX, VY, a) {
         super(x, y, w, h, img);
         this.speedX = VX;
         this.speedY = 0;
         this.accelaration = a;
-        this.color = c;
         this.downCollBlock = undefined;
         this.won = false;
         this.dead = false;
@@ -34,8 +33,9 @@ class Player extends Parent {
             image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
         }
         else {
-            if (keyIsDown(RIGHT_ARROW) || keyIsDown(LEFT_ARROW) || keyIsDown(UP_ARROW))
-                image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, window['playerWalk' + this.walkCounter].x, window['playerWalk' + this.walkCounter].y, playerWalkSprite.w, playerWalkSprite.h);
+            if (keyIsDown(RIGHT_ARROW) || keyIsDown(LEFT_ARROW) || keyIsDown(UP_ARROW)) {
+                image(this.img, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, window['playerWalk' + this.walkCounter].x, window['playerWalk' + this.walkCounter].y, playerWalkSprite.w, playerWalkSprite.h);
+            }
             else {
                 image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
                 this.walkCounter = 0;
@@ -52,19 +52,21 @@ class Player extends Parent {
 
     prepare() {
         this.edit();
-        if (!playerEditing) this.snap();
+        if (!playerEditing)
+            this.snap();
 
     }
 
     move() {
+        if (this.walkCounter == playerWalkFrames - 1)
+            this.walkCounter = 0
 
         if (keyIsDown(LEFT_ARROW) && !this.collision.left) {
             this.dirX = -1;
             this.walkCounter++;
-            if (this.walkCounter == playerWalkFrames)
-                this.walkCounter = 0
             if (this.x > 0) {
                 this.x -= this.speedX;
+
                 if (x < 0) {
                     x += this.speedX;
                 }
@@ -73,57 +75,45 @@ class Player extends Parent {
         else if (keyIsDown(RIGHT_ARROW) && !this.collision.right) {
             this.walkCounter++;
             this.dirX = 1;
-            if (this.walkCounter == playerWalkFrames)
-                this.walkCounter = 0
             if (this.x + this.w <= backgroundSize) {
-                this.x += this.speedX
+                this.x += this.speedX;
                 if (this.x + x + this.w / 2 >= canvasWidth / 2) {
-                    ///if (x < canvasWidth - backgroundSize)
-                    x -= this.speedX
+                    x -= this.speedX;
                 }
 
             }
-
-
         }
 
 
-        if (this.speedY < 6 )
+        if (this.speedY < playerFallingMaxSpeed)
             this.speedY += gravity;
 
-        if (this.collision.down) {
-            if(this.downCollBlock.type == "Vertical"){
-                this.speedY = this.downCollBlock.dirY
-            }
-            else{
-                this.speedY = 0;
-            }
-        }
-        if(!this.collision.up || this.speedY >= 0){
-            this.y += this.speedY;
-        }
-        else{
-            this.speedY = 0
-        }
+        if (this.collision.down)
+            this.speedY = this.downCollBlock.type == "Vertical" ? this.downCollBlock.dirY : 0;
 
-        if (this.y >= seaStartingY) {
+        if (!this.collision.up || this.speedY >= 0)
+            this.y += this.speedY;
+        else
+            this.speedY = 0;
+
+        if (this.y >= seaStartingY)
             this.die();
-        }
     }
 
     startJump() {
-        if (this.collision.down ) {
+        if (this.collision.down) {
             this.y -= 2;
-            this.speedY = -12.0;
+            this.speedY = playerJumpV0;
             this.collision.down = false;
         }
     }
 
     endJump() {
-        if (this.speedY < -6.0) {
-            this.speedY = -6.0;
+        if (this.speedY < -playerFallingMaxSpeed) {
+            this.speedY = -playerFallingMaxSpeed;
         }
     }
+
     checkCollision() {
 
         var that = this;
@@ -166,38 +156,45 @@ class Player extends Parent {
 
         if (bottom) {
             this.collision.down = true;
-            this.downCollBlock = bottom
-            this.y = bottom.y - this.h
-            if (bottom.type == "Horizontal" && !left && !right) {
-                this.x += bottom.dirX
+            this.downCollBlock = bottom;
+            this.y = bottom.y - this.h;
+
+            if (bottom.type == "Horizontal") {
+                if (bottom.dirX < 0) {
+                    if (!this.collision.left) {
+                        this.x += bottom.dirX;
+                    }
+                }
+                else {
+                    if (!this.collision.right) {
+                        this.x += bottom.dirX;
+                    }
+                }
             }
-            else if (bottom.type == "Sand") {
-                bottom.break()
-            }
+            else if (bottom.type == "Sand")
+                bottom.break();
         }
         else
             this.collision.down = false;
-        if (up) {
+
+
+        if (up)
             this.collision.up = true;
-            if (this.collision.down)
-                this.y = up.y + up.h + 1;
-        }
         else
             this.collision.up = false;
 
         if (right) {
             this.collision.right = true;
-            if (!this.collision.left && right.type == "Horizontal") {
+            if (!this.collision.left && right.type == "Horizontal")
                 this.x = right.x - this.w
-            }
         }
         else
             this.collision.right = false;
+
         if (left) {
             this.collision.left = true;
-            if (!this.collision.right && left.type == "Horizontal") {
+            if (!this.collision.right && left.type == "Horizontal")
                 this.x = left.x + left.w;
-            }
         }
         else {
             this.collision.left = false;
@@ -207,10 +204,10 @@ class Player extends Parent {
             this.die();
         }
 
-        //coin-part
         var eaten = coins.filter(function (coin) {
             return that.x + that.w > coin.x && that.x < coin.x + coin.w && that.y + that.h > coin.y && that.y < coin.y + coin.h
         });
+        
         eaten.forEach(function (c) {
             coins.splice(coins.indexOf(c), 1)
             player.eatenCoins++;
@@ -239,14 +236,12 @@ class Player extends Parent {
                 block.x = this.x - block.w;
             updateBlocksCoordinates(b)
         }
-
-
     }
 
     edit() {
         if (playerEditing) {
             this.x = mouseX - this.w / 2 - x;
-            this.y = mouseY - this.h / 2 - y
+            this.y = mouseY - this.h / 2 - y;
         }
     }
 
@@ -259,19 +254,17 @@ class Player extends Parent {
 
     die() {
         this.dead = true;
-        setTimeout(function(){
+        setTimeout(function () {
             gameStarted = false;
             construct(data)
-        },1000)
+        }, 1000);
     }
 }
 
 class Block extends Parent {
-    constructor(x, y, w, h, img, type, color, id) {
+    constructor(x, y, w, h, img, type) {
         super(x, y, w, h, img);
         this.type = type;
-        this.color = color;
-        this.id = id;
     }
 
     deleteBlock() {
@@ -282,8 +275,8 @@ class Block extends Parent {
 }
 
 class HorizontalBlock extends Block {
-    constructor(x, y, w, h, img, type, color, id, dirX, editRange) {
-        super(x, y, w, h, img, type, color, id);
+    constructor(x, y, w, h, img, c, type, dirX, editRange) {
+        super(x, y, w, h, img, type);
         this.staticX = this.x + this.w / 2;
         this.dirX = dirX;
         this.editRange = editRange;
@@ -291,7 +284,8 @@ class HorizontalBlock extends Block {
             x: this.x + this.editRange,
             y: this.y,
             w: this.w,
-            h: this.h
+            h: this.h,
+            color: c
         }
     }
     move() {
@@ -308,7 +302,7 @@ class HorizontalBlock extends Block {
                     this.editor.x = mouseX - this.editor.w / 2 - x;
                 else
                     this.editor.x = this.x + this.w / 2;
-
+                //test
                 this.editRange = this.editor.x + this.editor.w / 2 - (this.x + this.w / 2);
             }
         }
@@ -316,8 +310,8 @@ class HorizontalBlock extends Block {
 }
 
 class VerticalBlock extends Block {
-    constructor(x, y, w, h, img, type, color, id, dirY, editRange) {
-        super(x, y, w, h, img, type, color, id);
+    constructor(x, y, w, h, img, c, type, dirY, editRange) {
+        super(x, y, w, h, img, type);
         this.staticY = this.y + this.h / 2;
         this.dirY = dirY;
         this.editRange = editRange;
@@ -325,11 +319,12 @@ class VerticalBlock extends Block {
             x: this.x,
             y: this.y + this.editRange,
             w: this.w,
-            h: this.h
+            h: this.h,
+            color: c
         }
     }
     move() {
-        if (this.y + this.h / 2 > this.staticY + this.editRange || this.y + this.h / 2 < this.staticY ) {
+        if (this.y + this.h / 2 > this.staticY + this.editRange || this.y + this.h / 2 < this.staticY) {
             this.dirY *= -1;
         }
         this.y += this.dirY;
@@ -343,7 +338,7 @@ class VerticalBlock extends Block {
                     this.editor.y = mouseY - this.editor.h / 2 + y;
                 else
                     this.editor.y = this.y + this.h / 2
-
+                //test
                 this.editRange = this.editor.y + this.editor.h / 2 - (this.y + this.h / 2);
 
             }
@@ -354,8 +349,8 @@ class VerticalBlock extends Block {
 }
 
 class SandBlock extends Block {
-    constructor(x, y, w, h, type, color, id) {
-        super(x, y, w, h, type, color, id);
+    constructor(x, y, w, h, img, type) {
+        super(x, y, w, h, img, type);
         this.strength = 5;
         this.startedBreaking = false;
     }
@@ -368,14 +363,15 @@ class SandBlock extends Block {
 }
 
 class DeathBlock extends Block {
-    constructor(x, y, w, h, img, type, color, id, dirY) {
-        super(x, y, w, h, img, type, color, id);
+    constructor(x, y, w, h, img, imgS, type, dirY) {
+        super(x, y, w, h, img, type);
         this.slicer = {
             x: this.x,
             y: this.y,
             w: this.w,
             h: this.h / 3,
-            dirY: dirY
+            dirY: dirY,
+            img: imgS
         }
     }
 
@@ -387,29 +383,22 @@ class DeathBlock extends Block {
     }
 
     kill() {
-        if (Math.abs((this.slicer.x + this.slicer.w / 2) - (player.x + player.w / 2)) < this.slicer.w / 2 + player.w / 2 && player.y + player.h > this.slicer.y && player.y + player.h < this.slicer.y + this.slicer.h) {
-            player.color = [255, 0, 0];
+        if (Math.abs((this.slicer.x + this.slicer.w / 2) - (player.x + player.w / 2)) < this.slicer.w / 2 + player.w / 2 && player.y + player.h > this.slicer.y && player.y + player.h < this.slicer.y + this.slicer.h)
             player.die()
-        }
-        else {
-            player.color = playerColor;
-        }
     }
 
 }
 
 class Coin extends Parent {
-    constructor(x, y, w, h, img, color = [0, 0, 0]) {
+    constructor(x, y, w, h, img) {
         super(x, y, w, h, img);
-        this.color = color;
     }
 }
 
 class Cup extends Parent {
-    constructor(x, y, w, h, img, color) {
+    constructor(x, y, w, h, img) {
         super(x, y, w, h, img);
-        this.color = color;
-        this.opacity = 0.5;
+        this.alpha = 0.5;
         this.available = false
     }
     checkAvailablity() {
@@ -425,7 +414,6 @@ class Cup extends Parent {
 
     drawCup() {
         this.checkAvailablity();
-        //fill(...this.color, this.opacity);
         tint(255, this.alpha * 255)
         image(cupImg, this.x, this.y, this.w, this.h);
         tint(255, 255);
@@ -439,7 +427,3 @@ class Cup extends Parent {
 
     }
 }
-
-
-player = new Player(playerStartingX, playerStartingY, playerWidth, playerHeight, playerSprite, playerVX, playerVY, playerA, playerColor);
-cup = new Cup(cupStartingX, cupStartingY, cupWidth, cupHeight, cupImg, cupColor);

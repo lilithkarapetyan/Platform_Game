@@ -7,23 +7,21 @@ var y = 0;
 var gameStarted = false;
 var gravity = 0.5;
 
-var stoneImgURL = 'images/brickWall.png';
-var stoneImg;
-var sandImgURL = 'images/grassCenter_rounded.png';//'images/sand.png'
-var sandImg;
-var metalImgURL = 'images/grassMid.png';//'images/metal.png'
-var metalImg;
+var stoneImg = 'images/brickWall.png';
+var sandImg = 'images/grassCenter_rounded.png';//'images/sand.png'
+var metalImg = 'images/grassMid.png';//'images/metal.png'
 
 var backgroundColor = [192, 232, 236];
 var toolBarColor = [246, 192, 143];
 var seaColor = [56, 161, 193];
-var stoneColor = [205, 82, 82];
-var metalColor = [170, 170, 170];
-var sandColor = [255, 120, 100];
-var deathBlockSlicerColor = [255, 0, 0]
+// var stoneColor = [205, 82, 82];
+// var metalColor = [170, 170, 170];
+// var sandColor = [255, 120, 100];
+// var deathBlockSlicerColor = [255, 0, 0]
 
+var editorColor = [170, 170, 170, 50]; //r g b alpha
 var player, cup;
-var playerColor = [230, 230, 0];
+// var playerColor = [230, 230, 0];
 var playerOpacity = 50;
 
 var player;
@@ -53,7 +51,10 @@ var coinImg = "images/hud_coins.png";
 var slicerImg = "images/slicer.png";
 var backgroundImg = "images/bg.png"
 
-var cupColor = [255, 100, 120];
+var hArrowImg = "images/horArrow.png";
+var vArrowImg = "images/vArrow.png";
+
+// var cupColor = [255, 100, 120];
 var cupWidth = 45;
 var cupHeight = 75;
 var cupEditing = false;
@@ -87,6 +88,7 @@ var metalBlocksWidth = 100;
 var metalBlocksHeight = 25;
 var sandWidth = 50;
 var sandHeight = 50;
+var sandBlockStartingStrength = 5;
 var toolBarImagesGap = 5;
 
 var toolBarRectCorners = 5;
@@ -118,3 +120,5 @@ var data;
 var built = false;
 var base64;
 
+var playerFallingMaxSpeed = 6;
+var playerJumpV0 = -12;
