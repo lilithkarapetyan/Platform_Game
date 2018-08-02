@@ -207,7 +207,7 @@ class Player extends Parent {
         var eaten = coins.filter(function (coin) {
             return that.x + that.w > coin.x && that.x < coin.x + coin.w && that.y + that.h > coin.y && that.y < coin.y + coin.h
         });
-        
+
         eaten.forEach(function (c) {
             coins.splice(coins.indexOf(c), 1)
             player.eatenCoins++;
@@ -247,6 +247,9 @@ class Player extends Parent {
 
     win() {
         this.won = true;
+        alert("You won, please save your level");
+        gameStarted = false;
+        construct(data)
         /*
         https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal2
         */
