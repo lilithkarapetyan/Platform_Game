@@ -17,7 +17,7 @@ function drawBackground(x, y) {
 function drawToolBar() {
     for (var i = 0; i < tools.length; i++) {
         fill(...tools[i].color);
-        if (tools[i].f == "Save" && !player.won) {
+        if (tools[i].f == "Save" && !playerWon) {
             fill(...tools[i].color, 50);
         }
         rect(tools[i].x, 0, tools[i].w, tools[i].h, toolBarRectCorners);
@@ -62,11 +62,11 @@ function drawToolBar() {
             imageMode(CENTER)
             image(img, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, imageWidth * scale - 2 * horGap, imageHeight * scale - 2 * vertGap);
             if (tools[i].f == "Horizontal")
-                image(hArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w*scale/1.5  - 2 * horGap, tools[i].h*scale/1.5  - 2 * vertGap);
+                image(hArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w * scale / 1.5 - 2 * horGap, tools[i].h * scale / 1.5 - 2 * vertGap);
             else if (tools[i].f == "Vertical")
-                image(vArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w*scale/1.5  - 2 * horGap, tools[i].h*scale/1.5 - 2 * vertGap);
-            else if (tools[i].f == "Death") { 
-                image(slicerImg,tools[i].x + tools[i].w / 2, tools[i].y + (imageHeight * scale)/2 , imageWidth * scale - 2 * horGap, (imageHeight * scale)/2 - 2 * vertGap)
+                image(vArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w * scale / 1.5 - 2 * horGap, tools[i].h * scale / 1.5 - 2 * vertGap);
+            else if (tools[i].f == "Death") {
+                image(slicerImg, tools[i].x + tools[i].w / 2, tools[i].y + (imageHeight * scale) / 2, imageWidth * scale - 2 * horGap, (imageHeight * scale) / 2 - 2 * vertGap)
             }
             imageMode(CORNER);
         }
@@ -122,27 +122,41 @@ function toolBarFunction() {
     var tool = Math.floor(mouseX / tools[0].w);
     if (tools[tool].f == 'Play')
         start();
-    else if (tools[tool].f == "Save" && player.won)
+    else if (tools[tool].f == "Save" && playerWon)
         saveCoords(data);
 
     if (!gameStarted) {
-        if (tools[tool].f == 'Stone')
+        let addedBlock = false;
+        if (tools[tool].f == 'Stone') {
             blocks.push(new Block(tools[tool].x - x, tools[tool].y - y + toolBarHeight, stoneWidth, stoneHeight, stoneImg, 'Stone'));
-
-        else if (tools[tool].f == 'Horizontal')
+            addedBlock = true;
+        }
+        else if (tools[tool].f == 'Horizontal') {
             blocks.push(new HorizontalBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, metalImg, editorColor, 'Horizontal', horizontalBlocksSpeed, horizontalBlocksRange));
-
-        else if (tools[tool].f == 'Vertical')
+            addedBlock = true;
+        }
+        else if (tools[tool].f == 'Vertical') {
             blocks.push(new VerticalBlock(tools[tool].x - x, tools[tool].y + toolBarHeight - y, metalBlocksWidth, metalBlocksHeight, metalImg, editorColor, 'Vertical', verticalBlocksSpeed, verticalBlocksRange));
-
-        else if (tools[tool].f == 'Sand')
+            addedBlock = true;
+        }
+        else if (tools[tool].f == 'Sand') {
             blocks.push(new SandBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, sandWidth, sandHeight, sandImg, 'Sand'));
-
-        else if (tools[tool].f == 'Death')
+            addedBlock = true;
+        }
+        else if (tools[tool].f == 'Death') {
             blocks.push(new DeathBlock(tools[tool].x - x, tools[tool].y - y + toolBarHeight, metalBlocksWidth, metalBlocksHeight, metalImg, slicerImg, 'Death', deathBlockSlicerV));
-
-        else if (tools[tool].f == 'Coin')
+            addedBlock = true;
+        }
+        else if (tools[tool].f == 'Coin') {
             coins.push(new Coin(tools[tool].x - x, tools[tool].y - y + toolBarHeight, coinSize, coinSize, coinImg));
+            addedBlock = true;
+        }
+
+        if(addedBlock && playerWon){
+            playerWon = false;
+            informed = false;
+        }
+
 
     }
 }

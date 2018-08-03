@@ -45,6 +45,8 @@ var playerWalk9 = { x: 355, y: 0 };
 var playerWalk10 = { x: 284, y: 95 };
 var playerStand = [67, 190, 66, 92];
 
+var playerWon = false;
+
 var cupImg = "images/iceCream.png";
 var coinImg = "images/hud_coins.png";
 
@@ -122,3 +124,5 @@ var base64;
 
 var playerFallingMaxSpeed = 6;
 var playerJumpV0 = -12;
+
+var informed = false;

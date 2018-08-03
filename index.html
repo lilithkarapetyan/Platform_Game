@@ -4,20 +4,29 @@
   <meta charset="UTF-8">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/addons/p5.dom.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script language="javascript" type="text/javascript" src="script/config.js"></script>
   <script language="javascript" type="text/javascript" src="script/class.js"></script>
   <script language="javascript" type="text/javascript" src="script/functions.js"></script>
   <script language="javascript" type="text/javascript" src="script/script.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
   <form>
-    <input type="text" name="data" id = "data" placeholder="Insert your link to load the game">
-    <input type="submit" value="Submit" id = "submit">
+    <input type="text" name="data" id="data" placeholder="Insert your link to load the game">
+    <input type="submit" value="Submit" id="submit">
   </form>
+  <div id = "myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+        <h1 class="message">You Won</h1>
+      <h1 class="message">Press SAVE to get your link</h1>
+    </div>
+  </div>
+  
+  <script language="javascript" type="text/javascript" src="script/win.js"></script>
+
 </body>
 
 
-</html> 
-
+</html>

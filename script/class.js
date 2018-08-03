@@ -15,7 +15,6 @@ class Player extends Parent {
         this.speedY = 0;
         this.accelaration = a;
         this.downCollBlock = undefined;
-        this.won = false;
         this.dead = false;
         this.eatenCoins = 0;
         this.collision = {
@@ -43,8 +42,8 @@ class Player extends Parent {
         }
     }
 
-    play() {
-        if (!player.dead && !player.won) {
+    play() { 
+        if (!player.dead) {
             this.move();
             this.checkCollision();
         }
@@ -246,13 +245,9 @@ class Player extends Parent {
     }
 
     win() {
-        this.won = true;
-        alert("You won, please save your level");
+        playerWon = true;
         gameStarted = false;
-        //construct(data)
-        /*
-        https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal2
-        */
+        construct(data)
     }
 
     die() {

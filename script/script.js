@@ -35,11 +35,12 @@ function setup() {
             f: toolsFunctions[i]
         })
     }
+
 }
 
 function draw() {
+    check();
     drawBackground(x, y);
-
     if (gameStarted) {
         player.play();
     }
@@ -59,7 +60,8 @@ function draw() {
                 inputField.value = base64;
                 let encoded = window.atob(base64)
                 var decoded = decodeURI(encoded);
-                data = JSON.parse(decoded);
+                if (decoded)
+                    data = JSON.parse(decoded);
                 if (data) {
                     construct(data)
                     built = true;
@@ -96,6 +98,7 @@ function mouseReleased() {
 function mousePressed() {
     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
         if (!gameStarted) {
+
             if (mouseX > deleteButton.x && mouseX < deleteButton.x + deleteButton.size && mouseY > deleteButton.y && mouseY < deleteButton.y + deleteButton.size && (editedBlocksID == undefined || editedBlocksID < 0) && !playerEditing && (editedCoinsID == undefined || editedCoinsID < 0) && !blockRangeEditing) {
                 deleteEverything();
             }
@@ -107,6 +110,7 @@ function mousePressed() {
                 }
                 if ((editedBlocksID == undefined || editedBlocksID < 0) && (editedCoinsID == undefined || editedCoinsID < 0) && !cupEditing && !playerEditing) {
                     blockRangeEditing = blocks.find(function (b) {
+
                         if (b.editor) {
                             return mouseX > b.editor.x + x && mouseX < b.editor.x + b.editor.w + x && mouseY > b.editor.y + y && mouseY < b.editor.y + y + b.editor.h
                         }
