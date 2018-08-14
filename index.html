@@ -12,19 +12,35 @@
 </head>
 
 <body>
-  <form>
-    <input type="text" name="data" id="data" placeholder="Insert your link to load the game">
-    <input type="submit" value="Submit" id="submit">
-  </form>
-  <div id = "myModal" class="modal">
+  <div id="start" class="modal">
+    <div class="modal-content">
+      <h1>Beat these 3 levels and Create your own</h1>
+      <button type="button" id="lvl1">Level 1 </button>
+      <button type="button" id="lvl2">Level 2</button>
+      <button type="button" id="lvl3">Level 3</button>
+      <h4>or</h4>
+      <form>
+        <input type="text" name="data" id="data" placeholder="Insert link to load the game">
+        <input type="submit" value="Submit" id="submit">
+      </form>
+    </div>
+  </div>
+  <div id="win" class="modal hidden">
     <div class="modal-content">
       <span class="close">&times;</span>
-        <h1 class="message">You Won</h1>
+      <h1 class="message">You Won</h1>
       <h1 class="message">Press SAVE to get your link</h1>
     </div>
   </div>
-  
-  <script language="javascript" type="text/javascript" src="script/win.js"></script>
+  <div id="delete" class="modal hidden">
+    <div class="modal-content">
+      <h1>Delete everything?</h1>
+      <button type="button" id="yes">YES</button>
+      <button type="button" id="no">NO</button>
+    </div>
+  </div>
+
+  <script language="javascript" type="text/javascript" src="script/popup.js"></script>
 
 </body>
 

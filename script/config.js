@@ -1,15 +1,20 @@
 var canvasWidth = 800;
 var canvasHeight = 500;
-
+var popup = true;
 var x = 0;
 var y = 0;
- 
+var levelsPassed = 3;
 var gameStarted = false;
 var gravity = 0.5;
 
 var stoneImg = 'images/brickWall.png';
 var sandImg = 'images/grassCenter_rounded.png';//'images/sand.png'
 var metalImg = 'images/grassMid.png';//'images/metal.png'
+
+var startImg = "images/forward.png";
+var stopImg = "images/pause.png";
+var stopStartW = 50;
+var stopStarth = 50;
 
 var backgroundColor = [192, 232, 236];
 var toolBarColor = [246, 192, 143];
@@ -27,28 +32,28 @@ var playerOpacity = 50;
 var player;
 var playerStartingX = 100;
 var playerStartingY = 200;
-var playerWidth = 20;
+var playerWidth = 30;
 var playerHeight = 90;
-var playerWalkSprite = { w: 70, h: 94 }
+var playerWalkSprite = { w: 72, h: 97 }
 var playerWalkFrames = 11;
-var playerSprite = "images/p2_spritesheet.png"
+var playerSprite = "images/p3_spritesheet.png"
 var playerWalk0 = { x: 0, y: 0 };
-var playerWalk1 = { x: 71, y: 0 };
-var playerWalk2 = { x: 142, y: 0 };
-var playerWalk3 = { x: 0, y: 95 };
-var playerWalk4 = { x: 71, y: 95 };
-var playerWalk5 = { x: 142, y: 95 };
-var playerWalk6 = { x: 213, y: 0 };
-var playerWalk7 = { x: 284, y: 0 };
-var playerWalk8 = { x: 213, y: 95 };
-var playerWalk9 = { x: 355, y: 0 };
-var playerWalk10 = { x: 284, y: 95 };
-var playerStand = [67, 190, 66, 92];
+var playerWalk1 = { x: 73, y: 0 };
+var playerWalk2 = { x: 146, y: 0 };
+var playerWalk3 = { x: 0, y: 98 };
+var playerWalk4 = { x: 73, y: 98 };
+var playerWalk5 = { x: 146, y: 98 };
+var playerWalk6 = { x: 219, y: 0 };
+var playerWalk7 = { x: 292, y: 0 };
+var playerWalk8 = { x: 219, y: 98 };
+var playerWalk9 = { x: 365, y: 0 };
+var playerWalk10 = { x: 292, y: 98 };
+var playerStand = [0, 196, 66, 92];
 
 var playerWon = false;
 
-var cupImg = "images/iceCream.png";
-var coinImg = "images/hud_coins.png";
+var cupImg = "images/lock_r.png";
+var coinImg = "images/key_r.png";
 
 var slicerImg = "images/slicer.png";
 var backgroundImg = "images/bg.png"
@@ -57,8 +62,8 @@ var hArrowImg = "images/horArrow.png";
 var vArrowImg = "images/vArrow.png";
 
 // var cupColor = [255, 100, 120];
-var cupWidth = 45;
-var cupHeight = 75;
+var cupWidth = 50;
+var cupHeight = 50;
 var cupEditing = false;
 
 var cupStartingX = canvasWidth - playerStartingX - cupWidth
@@ -66,7 +71,7 @@ var cupStartingY = playerStartingY
 var blocks = [];
 var tools = [];
 var seaArr = [];
-var toolsFunctions = ["Play", "Stone", "Horizontal", "Vertical", "Sand", "Death", "Coin", "Save"];
+var toolsFunctions = ["Play", "Stone", "Horizontal", "Vertical", "Sand", "Death", "Coin"];
 
 var waveSize = 20;
 var toolBarHeight = canvasHeight / 8;
@@ -74,11 +79,13 @@ var seaStartingY = canvasHeight / 8 * 7;
 
 
 var deleteButton = {
-    size: 15,
-    x: canvasWidth - 2 * 15, // - 2* size
-    y: toolBarHeight + 15,   // + size
+    w: 50,
+    h: 50,
+    x: canvasWidth - 50 - 15, // - w - gap
+    y: canvasHeight - 50 - 15,   // - h - gap
     color: [255, 145, 145],
-    strokeWeight: 10
+    strokeWeight: 10,
+    img: "images/trashBox.png"
 }
 
 var horizontalBlocksSpeed = 0.75;
@@ -116,7 +123,7 @@ var deathBlockSlicerV = 0.2;
 
 var coins = [];
 var coinColor = [255, 100, 0];
-var coinSize = 20;
+var coinSize = 30;
 
 var data;
 var built = false;

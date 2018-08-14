@@ -14,6 +14,14 @@ function drawBackground(x, y) {
     drawToolBar();
 }
 
+function blink() {
+        
+            if (player.opacity == 1)
+                player.opacity = 0.5;
+            else
+                player.opacity = 1;
+     
+}
 function drawToolBar() {
     for (var i = 0; i < tools.length; i++) {
         fill(...tools[i].color);
@@ -41,10 +49,16 @@ function drawToolBar() {
             var imageWidth = coinSize;
             var imageHeight = coinSize;
         }
+        else if (tools[i].f == "Play") {
+            var img = gameStarted ? stopImg : startImg;
+            var imageWidth = stopStartW;
+            var imageHeight = stopStarth;
+        }
         else {
             img = undefined;
         }
 
+        imageMode(CENTER)
         if (img) {
             var scale = imageWidth > imageHeight ? tools[i].w / imageWidth : tools[i].h / imageHeight
             if (imageWidth > imageHeight) {
@@ -59,33 +73,25 @@ function drawToolBar() {
                 var horGap = 0;
                 var vertGap = toolBarImagesGap;
             }
-            imageMode(CENTER)
+            if (tools[i].f == "Death") {
+                image(slicerImg, tools[i].x + tools[i].w / 2, tools[i].y + (imageHeight * scale) / 2 - image, imageWidth * scale - 2 * horGap, (imageHeight * scale) / 2 - 2 * vertGap)
+            }
             image(img, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, imageWidth * scale - 2 * horGap, imageHeight * scale - 2 * vertGap);
             if (tools[i].f == "Horizontal")
                 image(hArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w * scale / 1.5 - 2 * horGap, tools[i].h * scale / 1.5 - 2 * vertGap);
             else if (tools[i].f == "Vertical")
                 image(vArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w * scale / 1.5 - 2 * horGap, tools[i].h * scale / 1.5 - 2 * vertGap);
-            else if (tools[i].f == "Death") {
-                image(slicerImg, tools[i].x + tools[i].w / 2, tools[i].y + (imageHeight * scale) / 2, imageWidth * scale - 2 * horGap, (imageHeight * scale) / 2 - 2 * vertGap)
-            }
-            imageMode(CORNER);
+
         }
         else {
-            textSize(toolBarTextSize);
-            textAlign(CENTER, CENTER);
-            fill(0)
-            if (tools[i].f == "Play") {
-                text(gameStarted ? "Stop" : tools[i].f, tools[i].x, 0, width / tools.length, toolBarHeight)
-            }
-            else
-                text(tools[i].f, tools[i].x, 0, width / tools.length, toolBarHeight)
         }
-
+        imageMode(CORNER);
     }
-    strokeWeight(deleteButton.strokeWeight);
-    stroke(...deleteButton.color)
-    line(deleteButton.x, deleteButton.y, deleteButton.x + deleteButton.size, deleteButton.y + deleteButton.size)
-    line(deleteButton.x + deleteButton.size, deleteButton.y, deleteButton.x, deleteButton.y + deleteButton.size);
+    // strokeWeight(deleteButton.strokeWeight);
+    // stroke(...deleteButton.color)
+    // line(deleteButton.x, deleteButton.y, deleteButton.x + deleteButton.size, deleteButton.y + deleteButton.size)
+    // line(deleteButton.x + deleteButton.size, deleteButton.y, deleteButton.x, deleteButton.y + deleteButton.size);
+    image(deleteButton.img, deleteButton.x, deleteButton.y, deleteButton.w, deleteButton.h)
     stroke(0);
     strokeWeight(1);
     noStroke();
@@ -152,7 +158,7 @@ function toolBarFunction() {
             addedBlock = true;
         }
 
-        if(addedBlock && playerWon){
+        if (addedBlock && playerWon) {
             playerWon = false;
             informed = false;
         }

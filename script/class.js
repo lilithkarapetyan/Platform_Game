@@ -16,6 +16,7 @@ class Player extends Parent {
         this.accelaration = a;
         this.downCollBlock = undefined;
         this.dead = false;
+        this.opacity = 1;
         this.eatenCoins = 0;
         this.collision = {
             right: false,
@@ -28,6 +29,8 @@ class Player extends Parent {
     }
 
     animate() {
+
+        tint(255, 255 * this.opacity);
         if (!gameStarted) {
             image(playerSprite, this.x - (playerWalkSprite.w - this.w) / 2, this.y, playerWalkSprite.w, playerWalkSprite.h, ...playerStand);
         }
@@ -40,13 +43,15 @@ class Player extends Parent {
                 this.walkCounter = 0;
             }
         }
+        tint(255, 255);
     }
 
-    play() { 
+    play() {
         if (!player.dead) {
             this.move();
             this.checkCollision();
         }
+
     }
 
     prepare() {
@@ -95,7 +100,7 @@ class Player extends Parent {
         else
             this.speedY = 0;
 
-        if (this.y >= seaStartingY)
+        if (this.y >= seaStartingY && !player.dead)
             this.die();
     }
 
@@ -199,7 +204,7 @@ class Player extends Parent {
             this.collision.left = false;
         }
 
-        if (this.collision.left && this.collision.right && this.collision.down) {
+        if (this.collision.left && this.collision.right && this.collision.down && !player.dead) {
             this.die();
         }
 
@@ -252,9 +257,12 @@ class Player extends Parent {
 
     die() {
         this.dead = true;
+        var b = setInterval(blink, 100)
+
         setTimeout(function () {
             gameStarted = false;
-            construct(data)
+            clearInterval(b)
+            construct(data);
         }, 1000);
     }
 }
@@ -266,7 +274,7 @@ class Block extends Parent {
     }
 
     deleteBlock() {
-        if (this.x + this.w / 2 > deleteButton.x - x && this.x + this.w / 2 < deleteButton.x - x + deleteButton.size && this.y + this.h / 2 > deleteButton.y - y && this.y + this.h / 2 < deleteButton.y - y + deleteButton.size) {
+        if (this.x + this.w / 2 > deleteButton.x - x && this.x + this.w / 2 < deleteButton.x - x + deleteButton.w && this.y + this.h / 2 > deleteButton.y - y && this.y + this.h / 2 < deleteButton.y - y + deleteButton.h) {
             blocks.splice(blocks.indexOf(this), 1)
         }
     }
@@ -367,7 +375,7 @@ class DeathBlock extends Block {
             x: this.x,
             y: this.y,
             w: this.w,
-            h: this.h / 3,
+            h: this.h / 2,
             dirY: dirY,
             img: imgS
         }
@@ -381,7 +389,7 @@ class DeathBlock extends Block {
     }
 
     kill() {
-        if (Math.abs((this.slicer.x + this.slicer.w / 2) - (player.x + player.w / 2)) < this.slicer.w / 2 + player.w / 2 && player.y + player.h > this.slicer.y && player.y + player.h < this.slicer.y + this.slicer.h)
+        if (Math.abs((this.slicer.x + this.slicer.w / 2) - (player.x + player.w / 2)) < this.slicer.w / 2 + player.w / 2 && player.y + player.h > this.slicer.y && player.y + player.h < this.slicer.y + this.slicer.h && !player.dead)
             player.die()
     }
 
@@ -390,6 +398,11 @@ class DeathBlock extends Block {
 class Coin extends Parent {
     constructor(x, y, w, h, img) {
         super(x, y, w, h, img);
+    }
+    deleteCoin() {
+        if (this.x + this.w / 2 > deleteButton.x - x && this.x + this.w / 2 < deleteButton.x - x + deleteButton.w && this.y + this.h / 2 > deleteButton.y - y && this.y + this.h / 2 < deleteButton.y - y + deleteButton.h) {
+            coins.splice(coins.indexOf(this), 1)
+        }
     }
 }
 
