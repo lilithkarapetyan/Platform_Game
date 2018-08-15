@@ -44,6 +44,7 @@ lvl2.onclick = function () {
 }
 lvl3.onclick = function () {
     startPopUp.style.display = "none";
+    popup = false;
 }
 
 if (data) {

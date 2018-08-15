@@ -100,7 +100,7 @@ class Player extends Parent {
         else
             this.speedY = 0;
 
-        if (this.y >= seaStartingY && !player.dead)
+        if (this.y >= seaStartingY - this.h/2 && !player.dead)
             this.die();
     }
 
@@ -438,3 +438,4 @@ class Cup extends Parent {
 
     }
 }
+

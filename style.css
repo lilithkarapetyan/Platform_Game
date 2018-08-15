@@ -76,6 +76,19 @@ canvas{
 
 }
 
+#yes{
+    background-color:rgb(97, 251, 82);
+    border-color:rgb(97, 251, 82);
+    width: 20%;
+    color:white;
+}
+
+#no{
+    background-color: rgb(247, 67, 44);
+    border-color:  rgb(247, 67, 44);
+    width: 20%;
+    color:white;
+}
 /* Modal Content */
 .modal-content {
     font-family: Arial, Helvetica, sans-serif;

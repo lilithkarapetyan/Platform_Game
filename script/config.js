@@ -133,3 +133,5 @@ var playerFallingMaxSpeed = 6;
 var playerJumpV0 = -12;
 
 var informed = false;
+
+var toolBarElements = [];

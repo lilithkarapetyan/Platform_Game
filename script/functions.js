@@ -15,86 +15,100 @@ function drawBackground(x, y) {
 }
 
 function blink() {
-        
-            if (player.opacity == 1)
-                player.opacity = 0.5;
-            else
-                player.opacity = 1;
-     
+
+    if (player.opacity == 1)
+        player.opacity = 0.5;
+    else
+        player.opacity = 1;
+
 }
 function drawToolBar() {
-    for (var i = 0; i < tools.length; i++) {
-        fill(...tools[i].color);
-        if (tools[i].f == "Save" && !playerWon) {
-            fill(...tools[i].color, 50);
-        }
-        rect(tools[i].x, 0, tools[i].w, tools[i].h, toolBarRectCorners);
-        if (tools[i].f == "Stone") {
-            var img = stoneImg;
-            var imageWidth = stoneWidth;
-            var imageHeight = stoneHeight;
-        }
-        else if (tools[i].f == "Horizontal" || tools[i].f == "Vertical" || tools[i].f == "Death") {
-            var img = metalImg;
-            var imageWidth = metalBlocksWidth;
-            var imageHeight = metalBlocksHeight;
-        }
-        else if (tools[i].f == "Sand") {
-            var img = sandImg;
-            var imageWidth = sandWidth;
-            var imageHeight = sandHeight;
-        }
-        else if (tools[i].f == "Coin") {
-            var img = coinImg;
-            var imageWidth = coinSize;
-            var imageHeight = coinSize;
-        }
-        else if (tools[i].f == "Play") {
-            var img = gameStarted ? stopImg : startImg;
-            var imageWidth = stopStartW;
-            var imageHeight = stopStarth;
-        }
-        else {
-            img = undefined;
-        }
+     for (var i = 0; i < tools.length; i++) {
+         fill(...tools[i].color);
+         if (tools[i].f == "Save" && !playerWon) {
+             fill(...tools[i].color, 50);
+         }
+         rect(tools[i].x, 0, tools[i].w, tools[i].h, toolBarRectCorners);
+         /*if (tools[i].f == "Stone") {
+             var img = stoneImg;
+             var imageWidth = stoneWidth;
+             var imageHeight = stoneHeight;
+         }
+         else if (tools[i].f == "Horizontal" || tools[i].f == "Vertical" || tools[i].f == "Death") {
+             var img = metalImg;
+             var imageWidth = metalBlocksWidth;
+             var imageHeight = metalBlocksHeight;
+         }
+         else if (tools[i].f == "Sand") {
+             var img = sandImg;
+             var imageWidth = sandWidth;
+             var imageHeight = sandHeight;
+         }
+         else if (tools[i].f == "Coin") {
+             var img = coinImg;
+             var imageWidth = coinSize;
+             var imageHeight = coinSize;
+         }*/
 
-        imageMode(CENTER)
-        if (img) {
-            var scale = imageWidth > imageHeight ? tools[i].w / imageWidth : tools[i].h / imageHeight
-            if (imageWidth > imageHeight) {
-                var horGap = toolBarImagesGap;
-                var vertGap = 0;
-            }
-            else if (imageWidth == imageHeight) {
-                var horGap = toolBarImagesGap;
-                var vertGap = toolBarImagesGap;
-            }
-            else {
-                var horGap = 0;
-                var vertGap = toolBarImagesGap;
-            }
-            if (tools[i].f == "Death") {
-                image(slicerImg, tools[i].x + tools[i].w / 2, tools[i].y + (imageHeight * scale) / 2 - image, imageWidth * scale - 2 * horGap, (imageHeight * scale) / 2 - 2 * vertGap)
-            }
-            image(img, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, imageWidth * scale - 2 * horGap, imageHeight * scale - 2 * vertGap);
-            if (tools[i].f == "Horizontal")
-                image(hArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w * scale / 1.5 - 2 * horGap, tools[i].h * scale / 1.5 - 2 * vertGap);
-            else if (tools[i].f == "Vertical")
-                image(vArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w * scale / 1.5 - 2 * horGap, tools[i].h * scale / 1.5 - 2 * vertGap);
+         if(tools[i].f == "Stone" || tools[i].f == "Horizontal" || tools[i].f == "Vertical" || tools[i].f == "Death" || tools[i].f == "Sand" ||tools[i].f == "Coin" ){
+            var img = tools[i].img;
+            var imageWidth = tools[i].imgW;
+            var imageHeight = tools[i].imgH;
+         }
+         else if (tools[i].f == "Play") {
+             var img = gameStarted ? stopImg : startImg;
+             var imageWidth = stopStartW;
+             var imageHeight = stopStarth;
+         }
+         else {
+             img = undefined;
+         }
+ 
+         imageMode(CENTER)
+         if (img) {
+             var scale = imageWidth > imageHeight ? tools[i].w / imageWidth : tools[i].h / imageHeight
+             if (imageWidth > imageHeight) {
+                 var horGap = toolBarImagesGap;
+                 var vertGap = 0;
+             }
+             else if (imageWidth == imageHeight) {
+                 var horGap = toolBarImagesGap;
+                 var vertGap = toolBarImagesGap;
+             }
+             else {
+                 var horGap = 0;
+                 var vertGap = toolBarImagesGap;
+             }
+             if (tools[i].f == "Death") {
+                //imageMode(CORNER);
+                if (false) {
+                    tools[i].slicer.vY *= -1
+                }
+                tools[i].slicer.y += tools[i].slicer.vY;
+                 image(tools[i].slicer.img, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2 - tools[i].imgH/2*scale - tools[i].slicer.h/2,tools[i].slicer.w * scale - 2 * horGap, tools[i].slicer.h * scale - 2 * vertGap )
+                 //imageMode(CENTER)
+             }
+             image(img, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].imgW * scale - 2 * horGap, tools[i].imgH * scale - 2 * vertGap);
+             if (tools[i].f == "Horizontal")
+                 image(hArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w * scale / 1.5 - 2 * horGap, tools[i].h * scale / 1.5 - 2 * vertGap);
+             else if (tools[i].f == "Vertical")
+                 image(vArrowImg, tools[i].x + tools[i].w / 2, tools[i].y + tools[i].h / 2, tools[i].w * scale / 1.5 - 2 * horGap, tools[i].h * scale / 1.5 - 2 * vertGap);
+ 
+         }
+         else {
+         }
+         imageMode(CORNER);
+     }
+     // strokeWeight(deleteButton.strokeWeight);
+     // stroke(...deleteButton.color)
+     // line(deleteButton.x, deleteButton.y, deleteButton.x + deleteButton.size, deleteButton.y + deleteButton.size)
+     // line(deleteButton.x + deleteButton.size, deleteButton.y, deleteButton.x, deleteButton.y + deleteButton.size);
+     image(deleteButton.img, deleteButton.x, deleteButton.y, deleteButton.w, deleteButton.h)
+     stroke(0);
+     strokeWeight(1);
+     noStroke();
 
-        }
-        else {
-        }
-        imageMode(CORNER);
-    }
-    // strokeWeight(deleteButton.strokeWeight);
-    // stroke(...deleteButton.color)
-    // line(deleteButton.x, deleteButton.y, deleteButton.x + deleteButton.size, deleteButton.y + deleteButton.size)
-    // line(deleteButton.x + deleteButton.size, deleteButton.y, deleteButton.x, deleteButton.y + deleteButton.size);
-    image(deleteButton.img, deleteButton.x, deleteButton.y, deleteButton.w, deleteButton.h)
-    stroke(0);
-    strokeWeight(1);
-    noStroke();
+
 }
 
 function drawSea() {
@@ -351,5 +365,9 @@ function construct(data) {
     cup = new Cup(data.cup.x, data.cup.y, cupWidth, cupHeight, cupImg);
     x = data.camera.x;
     y = data.camera.y;
+
+}
+
+function toolBarAnimations() {
 
 }

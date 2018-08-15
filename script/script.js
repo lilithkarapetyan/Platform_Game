@@ -36,6 +36,42 @@ function setup() {
             color: toolBarColor,
             f: toolsFunctions[i]
         })
+
+        if(toolsFunctions[i] == "Stone"){
+            tools[i].img = stoneImg; 
+            tools[i].imgH = stoneHeight;
+            tools[i].imgW = stoneWidth;
+        }
+        else if(toolsFunctions[i] == "Horizontal"){
+            tools[i].vX = 0.2;
+            tools[i].img = metalImg;
+            tools[i].imgH = metalBlocksHeight;
+            tools[i].imgW = metalBlocksWidth;
+        }
+        else if(toolsFunctions[i] == "Vertical"){
+            tools[i].vY = 0.2;
+            tools[i].img = metalImg;
+            tools[i].imgH = metalBlocksHeight;
+            tools[i].imgW = metalBlocksWidth;
+        }
+        else if(toolsFunctions[i] == "Death"){
+            tools[i].img = metalImg;
+            tools[i].imgH = metalBlocksHeight;
+            tools[i].imgW = metalBlocksWidth;
+            tools[i].slicer = {
+                x:tools[i].x,
+                y:tools[i].y,
+                w: tools[i].imgW,
+                h:tools[i].imgH/2,
+                vY:0.2,
+                img: slicerImg
+            }
+        }
+        else if(toolsFunctions[i] == "Sand"){
+            tools[i].img = sandImg;
+            tools[i].imgH = sandHeight;
+            tools[i].imgW = sandWidth;
+        }
     }
     
 
