@@ -100,7 +100,7 @@ class Player extends Parent {
         else
             this.speedY = 0;
 
-        if (this.y >= seaStartingY - this.h/2 && !player.dead)
+        if (this.y >= seaStartingY - this.h / 2 && !player.dead)
             this.die();
     }
 
@@ -250,9 +250,27 @@ class Player extends Parent {
     }
 
     win() {
-        playerWon = true;
+        let input = checkInput()
         gameStarted = false;
-        construct(data)
+        if (levelsPassed > 3 || input) {
+            playerWon = true;
+            saveBox.style.display = "block";
+            popup = true;
+        }
+        else if (levelsPassed == 3 && !input && currentLvl == levelsPassed) {
+            build.style.display = "block";
+            popup = true;
+        }
+        else {
+            startPopUp.style.display = "block";
+            popup = true;
+        }
+        if (levelsPassed < 3 && !input) {
+            levelsPassed++
+            startPopUp.style.display = "block";
+            popup = true;
+        }
+        construct(data);
     }
 
     die() {

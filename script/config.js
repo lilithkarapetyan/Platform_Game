@@ -3,7 +3,7 @@ var canvasHeight = 500;
 var popup = true;
 var x = 0;
 var y = 0;
-var levelsPassed = 3;
+var levelsPassed = 1;
 var gameStarted = false;
 var gravity = 0.5;
 
@@ -13,6 +13,7 @@ var metalImg = 'images/grassMid.png';//'images/metal.png'
 
 var startImg = "images/forward.png";
 var stopImg = "images/pause.png";
+var starImg = "images/star.png";
 var stopStartW = 50;
 var stopStarth = 50;
 
@@ -51,7 +52,10 @@ var playerWalk10 = { x: 292, y: 98 };
 var playerStand = [0, 196, 66, 92];
 
 var playerWon = false;
-
+//var linkLvl1 = "JTdCJTIyYmxvY2tzJTIyOiU1QiU3QiUyMnglMjI6ODUsJTIyeSUyMjozMTEuODEyNSwlMjJ0eXBlJTIyOiUyMlN0b25lJTIyJTdELCU3QiUyMnglMjI6MTg4LCUyMnklMjI6MjUyLjMxMjUsJTIydHlwZSUyMjolMjJIb3Jpem9udGFsJTIyLCUyMmVkaXRSYW5nZSUyMjoxNTAlN0QsJTdCJTIyeCUyMjozMjAsJTIyeSUyMjoyNjcuMzEyNSwlMjJ0eXBlJTIyOiUyMlZlcnRpY2FsJTIyLCUyMmVkaXRSYW5nZSUyMjo3NSU3RCwlN0IlMjJ4JTIyOjQ4NiwlMjJ5JTIyOjI4Mi44MTI1LCUyMnR5cGUlMjI6JTIyU2FuZCUyMiU3RCwlN0IlMjJ4JTIyOjU2OSwlMjJ5JTIyOjMwNi4zMTI1LCUyMnR5cGUlMjI6JTIyRGVhdGglMjIlN0QsJTdCJTIyeCUyMjo3NjMsJTIyeSUyMjoyODIuODEyNSwlMjJ0eXBlJTIyOiUyMlN0b25lJTIyJTdEJTVELCUyMnBsYXllciUyMjolN0IlMjJ4JTIyOjEwMCwlMjJ5JTIyOjIwMCU3RCwlMjJjb2lucyUyMjolNUIlN0IlMjJ4JTIyOjc5MSwlMjJ5JTIyOjIwMS44MTI1JTdEJTVELCUyMmN1cCUyMjolN0IlMjJ4JTIyOjY1NSwlMjJ5JTIyOjIwMCU3RCwlMjJjYW1lcmElMjI6JTdCJTIyeCUyMjotOTIsJTIyeSUyMjowJTdEJTdE"
+var linkLvl1 = "JTdCJTIyYmxvY2tzJTIyOiU1QiU3QiUyMnglMjI6OTMsJTIyeSUyMjoyOTYuODQzNzUsJTIydHlwZSUyMjolMjJTdG9uZSUyMiU3RCU1RCwlMjJwbGF5ZXIlMjI6JTdCJTIyeCUyMjoxMDAsJTIyeSUyMjoyMDAlN0QsJTIyY29pbnMlMjI6JTVCJTVELCUyMmN1cCUyMjolN0IlMjJ4JTIyOjE5Ny41LCUyMnklMjI6MjE5LjM0Mzc1JTdELCUyMmNhbWVyYSUyMjolN0IlMjJ4JTIyOjAsJTIyeSUyMjowJTdEJTdE"
+var linkLvl2 = "JTdCJTIyYmxvY2tzJTIyOiU1QiU3QiUyMnglMjI6OTMsJTIyeSUyMjoyOTYuODQzNzUsJTIydHlwZSUyMjolMjJTdG9uZSUyMiU3RCU1RCwlMjJwbGF5ZXIlMjI6JTdCJTIyeCUyMjoxMDAsJTIyeSUyMjoyMDAlN0QsJTIyY29pbnMlMjI6JTVCJTVELCUyMmN1cCUyMjolN0IlMjJ4JTIyOjE5Ny41LCUyMnklMjI6MjE5LjM0Mzc1JTdELCUyMmNhbWVyYSUyMjolN0IlMjJ4JTIyOjAsJTIyeSUyMjowJTdEJTdE"
+var linkLvl3 = "JTdCJTIyYmxvY2tzJTIyOiU1QiU3QiUyMnglMjI6OTQsJTIyeSUyMjozMDguNDA2MjUsJTIydHlwZSUyMjolMjJTdG9uZSUyMiU3RCwlN0IlMjJ4JTIyOjIwNCwlMjJ5JTIyOjI3Ni45MDYyNSwlMjJ0eXBlJTIyOiUyMkhvcml6b250YWwlMjIsJTIyZWRpdFJhbmdlJTIyOjE1MCU3RCwlN0IlMjJ4JTIyOjM5MiwlMjJ5JTIyOjIyMS40MDYyNSwlMjJ0eXBlJTIyOiUyMlNhbmQlMjIlN0QsJTdCJTIyeCUyMjo1MDksJTIyeSUyMjoyNzIuOTA2MjUsJTIydHlwZSUyMjolMjJWZXJ0aWNhbCUyMiwlMjJlZGl0UmFuZ2UlMjI6NzUlN0QlNUQsJTIycGxheWVyJTIyOiU3QiUyMnglMjI6MTAwLCUyMnklMjI6MjAwJTdELCUyMmNvaW5zJTIyOiU1QiU3QiUyMnglMjI6MjUwLCUyMnklMjI6MjA5LjQwNjI1JTdEJTVELCUyMmN1cCUyMjolN0IlMjJ4JTIyOjU4Ny41LCUyMnklMjI6MTcxLjkwNjI1JTdELCUyMmNhbWVyYSUyMjolN0IlMjJ4JTIyOi0yNiwlMjJ5JTIyOjAlN0QlN0Q"
 var cupImg = "images/lock_r.png";
 var coinImg = "images/key_r.png";
 
@@ -61,6 +65,9 @@ var backgroundImg = "images/bg.png"
 var hArrowImg = "images/horArrow.png";
 var vArrowImg = "images/vArrow.png";
 
+var menuImg = "images/menu.png";
+var menuW = 50;
+var menuH = 50;
 // var cupColor = [255, 100, 120];
 var cupWidth = 50;
 var cupHeight = 50;
@@ -70,14 +77,18 @@ var cupStartingX = canvasWidth - playerStartingX - cupWidth
 var cupStartingY = playerStartingY
 var blocks = [];
 var tools = [];
+var toolsForPlaying = [];
 var seaArr = [];
 var toolsFunctions = ["Play", "Stone", "Horizontal", "Vertical", "Sand", "Death", "Coin"];
-
+var toolBarForPlaying = ["Play", "Menu"];
+var nextArrowImg = "images/arrowRight.png";
+var nextArrowW = 50;
+var nextArrowH = 50;
 var waveSize = 20;
 var toolBarHeight = canvasHeight / 8;
 var seaStartingY = canvasHeight / 8 * 7;
 
-
+var currentLvl = 0;
 var deleteButton = {
     w: 50,
     h: 50,
@@ -87,7 +98,6 @@ var deleteButton = {
     strokeWeight: 10,
     img: "images/trashBox.png"
 }
-
 var horizontalBlocksSpeed = 0.75;
 var verticalBlocksSpeed = 0.75;
 
@@ -134,4 +144,9 @@ var playerJumpV0 = -12;
 
 var informed = false;
 
-var toolBarElements = [];
+var star = {
+    x: cupStartingX + cupWidth/2,
+    y: cupStartingY + cupHeight/2, 
+    w: 20,
+    h:20
+}
