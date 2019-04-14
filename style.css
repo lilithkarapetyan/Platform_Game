@@ -7,7 +7,7 @@ canvas{
     margin: 0 auto;
 }
 
-#letsstart{
+#letsstart, #saveButton, #OK{
     background-color: #c0e8ec;
     border: 2px solid #c0e8ec;
     color:#266a7f;
@@ -15,7 +15,7 @@ canvas{
     padding:1%;
     border: 2px solid#c0e8ec;
 }
-#data{
+#data, #link{
     display: block;
     margin: auto;
     margin-top: 2.5%;
@@ -59,9 +59,17 @@ canvas{
     border-color: #88e060;
     background-color: #88e060;
 }
+#lvl2:disabled{
+    border-color:#88e060;
+    background-color:#aaa;
+}
 #lvl3{
     border-color: #FFD948;
     background-color: #FFD948;
+}
+#lvl3:disabled{
+    border-color: #FFD948;
+    background-color: #aaa;
 }
 .modal h1{
     font-size: 22;
